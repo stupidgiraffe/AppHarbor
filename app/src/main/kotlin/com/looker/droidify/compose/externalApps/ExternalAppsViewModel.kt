@@ -23,6 +23,7 @@ import com.looker.droidify.data.AppRepository
 import com.looker.droidify.data.InstalledRepository
 import com.looker.droidify.data.model.PackageName
 import com.looker.droidify.data.signerMismatch
+import com.looker.droidify.external.CreatorDiscoveryJob
 import com.looker.droidify.external.ExternalAccount
 import com.looker.droidify.external.ExternalApi
 import com.looker.droidify.external.ExternalApp
@@ -70,6 +71,7 @@ import com.looker.droidify.utility.common.extension.installerSourceLabel
 import com.looker.droidify.utility.common.extension.isVersionDowngrade
 import com.looker.droidify.utility.common.extension.singleSignature
 import com.looker.droidify.work.BatchUpdateProgress
+import com.looker.droidify.work.CreatorDiscoveryScheduler
 import com.looker.droidify.work.UpdateAllWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -106,6 +108,7 @@ class ExternalAppsViewModel @Inject constructor(
     // Where a running "update all" reports what it is downloading, so a source's own page shows
     // that download too rather than offering to start it again.
     private val batchProgress: BatchUpdateProgress,
+    private val creatorDiscoveryScheduler: CreatorDiscoveryScheduler,
     @param:ApplicationContext private val context: Context,
 ) : ViewModel() {
 
@@ -178,38 +181,15 @@ class ExternalAppsViewModel @Inject constructor(
     /** Tracked whole-account sources (each expands to several entries in [apps]). */
     val accounts: StateFlow<List<ExternalAccount>> = repository.accounts.asStateFlow(emptyList())
 
-    /** Account keys whose discovery is currently running (an automatic first scan or a manual rescan),
-     *  so callers never launch a second scan for the same account and the repositories list can show a
-     *  spinner on the account row while one is in flight. */
-    private val _scanningAccounts = MutableStateFlow<Set<String>>(emptySet())
-    val scanningAccounts: StateFlow<Set<String>> = _scanningAccounts
+    /** Durable discovery state keyed by account; survives this ViewModel and app process. */
+    val accountDiscoveryJobs: StateFlow<Map<String, CreatorDiscoveryJob>> =
+        repository.discoveryJobs
+            .map { jobs -> jobs.associateBy { it.accountKey } }
+            .asStateFlow(emptyMap())
 
-    init {
-        // Discover the apps of any enabled account that has never been scanned (lastScan == 0) as soon
-        // as it appears (one added/enabled by the user) without waiting for the throttled refresh, so
-        // its apps show up promptly. A manually added account is already scanned at add time; a disabled
-        // account (e.g. the opt-in account seeded on first run) is left inert until the user enables it.
-        viewModelScope.launch {
-            repository.accounts.collect { list ->
-                list.forEach { account ->
-                    if (!account.enabled ||
-                        account.lastScan != 0L ||
-                        account.key in _scanningAccounts.value
-                    ) {
-                        return@forEach
-                    }
-                    _scanningAccounts.update { it + account.key }
-                    launch {
-                        try {
-                            externalRefresher.rescanAccountNow(account)
-                        } finally {
-                            _scanningAccounts.update { it - account.key }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    val scanningAccounts: StateFlow<Set<String>> = accountDiscoveryJobs
+        .map { jobs -> jobs.filterValues { it.isActive }.keys }
+        .asStateFlow(emptySet())
 
     /** Bumped to re-query the package manager (e.g. when the screen is reopened). */
     private val installedRefresh = MutableStateFlow(0)
@@ -1306,20 +1286,14 @@ class ExternalAppsViewModel @Inject constructor(
             _addState.value = AddSourceState.LOADING
             var added = false
             try {
-                // Known public hosts carry their provider; for an unknown self-hosted host we don't have
-                // a repo to probe, so we try the Gitea/Forgejo then the GitLab account API and keep
-                // whichever lists repos.
-                val candidates = ref.provider?.let { listOf(it) }
-                    ?: listOf(SourceProvider.CODEBERG, SourceProvider.GITLAB)
-                var provider: SourceProvider? = null
-                var repos: List<RepoRef> = emptyList()
-                for (candidate in candidates) {
-                    val host = ref.host.ifEmpty { publicHost(candidate) }
-                    val listed = externalApi.listAccountRepos(candidate, host, ref.owner, includeForks)
-                    if (listed.isNotEmpty()) {
-                        provider = candidate
-                        repos = listed
-                        break
+                val provider = ref.provider ?: run {
+                    listOf(SourceProvider.CODEBERG, SourceProvider.GITLAB).firstOrNull { candidate ->
+                        externalApi.listAccountRepos(
+                            candidate,
+                            ref.host.ifEmpty { publicHost(candidate) },
+                            ref.owner,
+                            includeForks,
+                        ).isNotEmpty()
                     }
                 }
                 if (provider == null) {
@@ -1336,44 +1310,19 @@ class ExternalAppsViewModel @Inject constructor(
                     label = trimmedName.ifEmpty { ref.owner },
                     enabled = true,
                     includeForks = includeForks,
-                    lastScan = System.currentTimeMillis(),
-                )
-                // Both lists asked of the repository rather than of [accounts]/[apps], for the reason
-                // the single-source add above gives: those flows are empty until a screen collects
-                // them, so an add arriving from a link compared against nothing.
-                if (repository.getAccounts().any { it.key == account.key }) {
-                    toast(context.getString(R.string.external_account_already_added, account.label))
-                    return@launch
-                }
-                // Don't absorb a repo the user already tracks as its own single-repo source (e.g. the
-                // built-in Omnify repo): leave it standalone.
-                val standaloneKeys = repository.getApps()
-                    .filter { it.accountKey == null }
-                    .map { it.key }
-                    .toSet()
-                val discovered = externalRefresher.discoverAccountApps(
-                    account = account,
-                    repos = repos,
-                    skipKeys = standaloneKeys,
                     includePrereleases = includePrereleases,
                     muteUpdates = muteUpdates,
-                    apkFilter = apkFilter,
-                    versionExcludeFilter = versionExcludeFilter,
+                    apkFilter = apkFilter.trim(),
+                    versionExcludeFilter = versionExcludeFilter.trim(),
+                    lastScan = 0L,
                 )
-                if (discovered.isEmpty()) {
-                    // Distinguish "really nothing to install" from "the API rate limit cut the per-repo
-                    // release checks short" or "the token itself was rejected" (either would also yield
-                    // nothing), so the user knows what to actually do instead of thinking their account
-                    // has no apps.
-                    val (message, _) = githubFailureMessage(
-                        context.getString(R.string.external_account_no_apps, ref.owner),
-                    )
-                    toast(message = message, long = true)
+                if (repository.getAccounts().any { it.key == account.key }) {
+                    toast(context.getString(R.string.external_already_added, account.label))
                     return@launch
                 }
-                repository.upsertApps(discovered)
                 repository.upsertAccount(account)
-                toast(context.getString(R.string.external_account_added, account.label, discovered.size))
+                creatorDiscoveryScheduler.enqueue(account)
+                toast(context.getString(R.string.external_account_queued, account.label))
                 added = true
             } finally {
                 _addState.value = if (added) AddSourceState.SUCCESS else AddSourceState.IDLE
@@ -1381,55 +1330,28 @@ class ExternalAppsViewModel @Inject constructor(
         }
     }
 
-    /** Re-scans [account]'s repos to pick up newly published apps (existing ones are left untouched;
-     *  the normal [refresh] keeps their releases current). Updates the account's last-scan time. This is
-     *  the only way to look for new apps sooner than the once-a-day automatic pass (see [refresh]), so
-     *  unlike that silent background pass, this one is guarded against overlapping with another scan of
-     *  the same account, shows a spinner on the account row for as long as it runs (see
-     *  [scanningAccounts]), and reports what it found once done, the same way other user-triggered
-     *  actions do. */
+    /** Enqueues a genuine refresh; WorkManager owns its lifetime and duplicate suppression. */
     fun rescanAccount(account: ExternalAccount) {
-        if (account.key in _scanningAccounts.value) return
-        _scanningAccounts.update { it + account.key }
-        viewModelScope.launch {
-            try {
-                val found = externalRefresher.rescanAccountNow(account)
-                // A big account (many repos) can burn through the anonymous 60-requests/hour GitHub quota
-                // partway through, silently: every repo checked after that point looks exactly like one
-                // that genuinely has nothing installable (see ExternalApi.getText), so found == 0 alone
-                // can't tell "nothing new" apart from "gave up partway through". shouldSuggestGithubToken
-                // can, and it's the same signal the add-source dialogs already warn with.
-                toast(
-                    when {
-                        found > 0 -> context.resources.getQuantityString(
-                            R.plurals.external_account_rescan_found_FORMAT,
-                            found,
-                            found,
-                        )
-                        externalApi.shouldSuggestGithubToken() ->
-                            context.getString(R.string.external_account_rescan_rate_limited)
-                        else -> context.getString(R.string.external_account_rescan_none_found)
-                    },
-                )
-            } finally {
-                _scanningAccounts.update { it - account.key }
-            }
-        }
+        viewModelScope.launch { creatorDiscoveryScheduler.enqueue(account) }
     }
 
     /** Enables/disables a whole account, cascading to all of its discovered apps. */
     fun setAccountEnabled(account: ExternalAccount, enabled: Boolean) {
         viewModelScope.launch {
-            repository.upsertAccount(account.copy(enabled = enabled))
+            val updated = account.copy(enabled = enabled)
+            repository.upsertAccount(updated)
             repository.setAccountAppsEnabled(account.key, enabled)
+            if (enabled) creatorDiscoveryScheduler.enqueue(updated)
         }
     }
 
     /** Removes an account source and every app it discovered. */
     fun removeAccount(account: ExternalAccount) {
         viewModelScope.launch {
+            creatorDiscoveryScheduler.cancel(account.key)
             repository.removeAppsByAccount(account.key)
             repository.removeAccount(account.key)
+            repository.removeDiscoveryJob(account.key)
         }
     }
 
@@ -1497,7 +1419,10 @@ class ExternalAppsViewModel @Inject constructor(
     fun refresh(force: Boolean = false) {
         if (refreshJob?.isActive == true) return
         _isRefreshing.value = true
-        val job = viewModelScope.launch { externalRefresher.refresh(force) }
+        val job = viewModelScope.launch {
+            externalRefresher.refresh(force)
+            creatorDiscoveryScheduler.scheduleEligibleAccounts()
+        }
         refreshJob = job
         job.invokeOnCompletion { _isRefreshing.value = false }
     }

@@ -40,6 +40,7 @@ import com.looker.droidify.utility.common.localeCodeForTag
 import com.looker.droidify.utility.extension.toInstalledItem
 import com.looker.droidify.work.AutoUpdateWorker
 import com.looker.droidify.work.CleanUpWorker
+import com.looker.droidify.work.CreatorDiscoveryScheduler
 import com.looker.droidify.work.DownloadStatsWorker
 import com.looker.droidify.work.SyncWorker
 import dagger.hilt.android.HiltAndroidApp
@@ -88,6 +89,9 @@ class Droidify : Application(), SingletonImageLoader.Factory, Configuration.Prov
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
+    @Inject
+    lateinit var creatorDiscoveryScheduler: CreatorDiscoveryScheduler
+
     override fun onCreate() {
         super.onCreate()
 
@@ -98,6 +102,7 @@ class Droidify : Application(), SingletonImageLoader.Factory, Configuration.Prov
         checkLanguage()
         updatePreference()
         scheduleDownloadStats()
+        appScope.launch { creatorDiscoveryScheduler.resumeAndSchedule() }
         appScope.launch { installer() }
     }
 

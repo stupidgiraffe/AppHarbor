@@ -612,4 +612,11 @@
     <string name="confirm_install_title">Confirmation needed</string>
     <string name="confirm_install_DESC">Tap to finish installing %1$s</string>
     <string name="confirm_update_DESC">Tap to finish updating %1$s</string>
+    <string name="external_account_queued">Added %1$s; discovery queued</string>
+    <string name="external_account_queued_status">Queued</string>
+    <string name="external_account_progress_FORMAT">Scanning %1$d/%2$d repositories</string>
+    <string name="external_account_retrying">Retrying after a temporary failure</string>
+    <string name="external_account_failed_FORMAT">Failed: %1$s</string>
+    <string name="external_account_unknown_error">Unknown error</string>
+    <string name="external_account_complete_FORMAT">Complete · %1$d apps</string>
 </resources>

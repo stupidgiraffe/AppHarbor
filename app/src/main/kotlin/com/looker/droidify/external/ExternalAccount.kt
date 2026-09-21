@@ -27,6 +27,11 @@ data class ExternalAccount(
      *  some accounts publish their apps as forks of upstream projects, so it's a per-account choice.
      *  No effect on GitLab, whose project list doesn't flag forks. */
     val includeForks: Boolean = false,
+    /** Release-selection defaults retained for every later resumable scan. */
+    val includePrereleases: Boolean = false,
+    val muteUpdates: Boolean = false,
+    val apkFilter: String = "",
+    val versionExcludeFilter: String = "",
     /** Epoch millis of the last repo-list scan (0 = never), driving the once-a-day auto rescan that
      *  picks up newly published apps. */
     val lastScan: Long = 0,

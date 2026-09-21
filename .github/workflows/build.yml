@@ -52,6 +52,14 @@ jobs:
       - name: Build and test
         run: ./gradlew --no-daemon assembleDebug testDebugUnitTest
 
+      - name: Upload AppHarbor development APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: appharbor-debug-${{ github.sha }}
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
       # Only useful when something failed: the HTML report says which test, and why.
       - name: Upload test report
         if: failure()

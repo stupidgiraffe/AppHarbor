@@ -82,17 +82,10 @@ class ExternalRefresher @Inject constructor(
                 return
             }
             tracked.forEach { app -> refreshOne(app) }
-            // Once a day, re-scan each enabled account for newly published apps (the apps it already
-            // found are refreshed by the loop above). Disabled accounts and never-scanned ones (handled
-            // by the ViewModel's init watcher) are skipped, so this barely adds to the API cost.
-            repository.getAccounts()
-                .filter {
-                    it.enabled &&
-                        it.lastScan != 0L &&
-                        System.currentTimeMillis() - it.lastScan > ACCOUNT_RESCAN_INTERVAL_MS
-                }
-                .forEach { rescanAccountNow(it) }
         }
+    }
+
+    private suspend fun refreshOne        }
     }
 
     private suspend fun refreshOne(app: ExternalApp) {
@@ -221,44 +214,57 @@ class ExternalRefresher @Inject constructor(
     }
 
     /**
-     * Re-scans [account]'s repos to pick up newly published apps (existing ones are left untouched; the
-     * per-app loop refreshes those). Returns how many new apps were discovered, so a manual rescan can
-     * report it; the automatic callers ignore it.
+     * Re-scans [account]'s repositories with a durable per-repository checkpoint supplied by the worker.
+     * Each discovered app is committed before the checkpoint advances, so process death repeats at most
+     * one repository and never loses the repositories already completed.
      */
-    suspend fun rescanAccountNow(account: ExternalAccount): Int {
+    suspend fun rescanAccountNow(
+        account: ExternalAccount,
+        alreadyProcessed: Set<String> = emptySet(),
+        onProgress: suspend (processed: Int, total: Int, repoKey: String, discovered: Int) -> Unit =
+            { _, _, _, _ -> },
+    ): Int {
         val repos = externalApi.listAccountRepos(
             account.provider,
             account.effectiveHost,
             account.owner,
             account.includeForks,
+            throwOnTransient = true,
         )
-        // Bump the last-scan time even when the listing fails/empties, so a transient failure doesn't
-        // make every refresh hammer the API; a real new app shows up at the next daily scan.
+        val trackedKeys = repository.getApps()
+            .filter { it.accountKey == null || it.accountKey == account.key }
+            .mapTo(mutableSetOf()) { it.key }
+
         var discoveredCount = 0
-        if (repos.isNotEmpty()) {
-            // Skip repos already tracked: this account's existing apps, plus any standalone single-repo
-            // source (so the account never absorbs e.g. the built-in Omnify repo).
-            val skipKeys = repository.getApps()
-                .filter { it.accountKey == null || it.accountKey == account.key }
-                .map { it.key }
-                .toSet()
+        var processedCount = repos.count { repoCheckpointKey(it) in alreadyProcessed }
+        for (ref in repos) {
+            val checkpointKey = repoCheckpointKey(ref)
+            if (checkpointKey in alreadyProcessed) continue
             val discovered = discoverAccountApps(
                 account = account,
-                repos = repos,
-                skipKeys = skipKeys,
-                includePrereleases = false,
-                muteUpdates = false,
-                apkFilter = "",
-                versionExcludeFilter = "",
+                repos = listOf(ref),
+                skipKeys = trackedKeys,
+                includePrereleases = account.includePrereleases,
+                muteUpdates = account.muteUpdates,
+                apkFilter = account.apkFilter,
+                versionExcludeFilter = account.versionExcludeFilter,
             )
+            if (externalApi.wasRateLimited()) {
+                throw AccountDiscoveryTransientException("Provider rate limit reached")
+            }
             if (discovered.isNotEmpty()) {
                 repository.upsertApps(discovered)
-                discoveredCount = discovered.size
+                trackedKeys += discovered.map { it.key }
+                discoveredCount += discovered.size
             }
+            processedCount++
+            onProgress(processedCount, repos.size, checkpointKey, discovered.size)
         }
         repository.upsertAccount(account.copy(lastScan = System.currentTimeMillis()))
         return discoveredCount
     }
+
+    private fun repoCheckpointKey(ref: RepoRef): String = "${ref.owner}/${ref.repo}"
 
     /**
      * For each repo of [account] not already tracked ([skipKeys]), keeps those that ship an installable
