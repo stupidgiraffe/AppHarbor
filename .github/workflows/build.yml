@@ -42,6 +42,11 @@ jobs:
       # Puts the Android SDK's command line tools on the runner and accepts the SDK licences, which
       # is what lets Gradle fetch the platform this project compiles against on its own.
       - uses: android-actions/setup-android@v3
+        with:
+          # The legacy `tools` package was removed from current SDK repositories. The hosted runner
+          # already includes the SDK platforms/build-tools; this keeps sdkmanager and adb available
+          # without asking it to install that retired package.
+          packages: platform-tools
 
       # Caches the Gradle distribution and the dependency downloads between runs.
       - uses: gradle/actions/setup-gradle@v4
