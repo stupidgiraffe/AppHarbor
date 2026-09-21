@@ -1051,8 +1051,6 @@ private fun ExternalAccountItem(
                 }
             }
         }
-        Spacer(modifier = Modifier.size(8.dp))            }
-        }
         Spacer(modifier = Modifier.size(8.dp))
         // Rescan / remove in an overflow menu, before the toggle so every toggle lines up at the far
         // right (as for sources).

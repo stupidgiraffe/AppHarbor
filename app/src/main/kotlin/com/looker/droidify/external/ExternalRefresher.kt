@@ -85,9 +85,6 @@ class ExternalRefresher @Inject constructor(
         }
     }
 
-    private suspend fun refreshOne        }
-    }
-
     private suspend fun refreshOne(app: ExternalApp) {
         // A release may not exist yet (e.g. the seeded Omnify source has no published release), or the
         // source may simply not be enabled yet. Either way we still scan the repo below for its icon /
