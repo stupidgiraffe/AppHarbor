@@ -43,6 +43,9 @@ import javax.inject.Singleton
  * Reuses the app's shared Ktor [HttpClient]. Unauthenticated, so it's subject to each provider's
  * anonymous rate limit — plenty for occasionally adding a source and checking a handful of apps.
  */
+internal class AccountDiscoveryTransientException(message: String, cause: Throwable? = null) :
+    Exception(message, cause)
+
 @Singleton
 class ExternalApi @Inject constructor(
     private val httpClient: HttpClient,
@@ -91,6 +94,8 @@ class ExternalApi @Inject constructor(
     /** True when the last GitHub call was rate-limited *and* no token is configured — i.e. the moment
      *  to nudge the user that adding a token would lift the limit. */
     suspend fun shouldSuggestGithubToken(): Boolean = rateLimited && githubAuthToken() == null
+
+    fun wasRateLimited(): Boolean = rateLimited
 
     /**
      * Checks the currently configured GitHub token right now, instead of leaving [githubTokenInvalid]
@@ -954,32 +959,32 @@ class ExternalApi @Inject constructor(
         host: String,
         owner: String,
         includeForks: Boolean,
+        throwOnTransient: Boolean = false,
     ): List<RepoRef> = withContext(Dispatchers.IO) {
-        runCatching {
+        val load: suspend () -> List<RepoRef> = {
             when (provider) {
                 SourceProvider.GITHUB -> pagedAccountRepos { page ->
                     val text = getText(
                         url = "https://api.github.com/users/${owner.urlPathSegment()}/repos" +
                             "?per_page=100&page=$page&type=owner&sort=pushed",
                         github = true,
+                        throwOnTransient = throwOnTransient,
                     ) ?: return@pagedAccountRepos PageResult(emptyList(), 0)
                     giteaPage(text, owner, includeForks)
                 }
-
                 SourceProvider.CODEBERG -> pagedAccountRepos { page ->
                     val text = getText(
                         url = "https://$host/api/v1/users/${owner.urlPathSegment()}/repos?limit=50&page=$page",
+                        throwOnTransient = throwOnTransient,
                     ) ?: return@pagedAccountRepos PageResult(emptyList(), 0)
                     giteaPage(text, owner, includeForks)
                 }
-
                 SourceProvider.GITLAB -> {
-                    // A GitLab account name can be a user or a group; try user projects first, then group
-                    // projects (including subgroups) when that yields nothing.
                     val user = pagedAccountRepos { page ->
                         gitlabProjects(
                             "https://$host/api/v4/users/${owner.urlPathSegment()}" +
                                 "/projects?per_page=100&page=$page",
+                            throwOnTransient,
                         )
                     }
                     user.ifEmpty {
@@ -987,12 +992,14 @@ class ExternalApi @Inject constructor(
                             gitlabProjects(
                                 "https://$host/api/v4/groups/${owner.urlPathSegment()}/projects" +
                                     "?per_page=100&page=$page&include_subgroups=true",
+                                throwOnTransient,
                             )
                         }
                     }
                 }
             }
-        }.getOrNull().orEmpty()
+        }
+        if (throwOnTransient) load() else runCatching { load() }.getOrNull().orEmpty()
     }
 
     /** One page of an account-repo listing: the kept refs plus the raw item count (before filtering),
@@ -1021,8 +1028,8 @@ class ExternalApi @Inject constructor(
         return PageResult(refs, dtos.size)
     }
 
-    private suspend fun gitlabProjects(url: String): PageResult {
-        val text = getText(url) ?: return PageResult(emptyList(), 0)
+    private suspend fun gitlabProjects(url: String, throwOnTransient: Boolean = false): PageResult {
+        val text = getText(url, throwOnTransient = throwOnTransient) ?: return PageResult(emptyList(), 0)
         val dtos = runCatching {
             json.decodeFromString(ListSerializer(GitlabProjectDto.serializer()), text)
         }.getOrNull().orEmpty()
@@ -1068,6 +1075,7 @@ class ExternalApi @Inject constructor(
         url: String,
         github: Boolean = false,
         revalidate: Boolean = false,
+        throwOnTransient: Boolean = false,
     ): String? {
         val cached = responseCache.load(url)
         if (!revalidate && cached != null && responseCache.isFresh(cached)) return cached.body
@@ -1084,6 +1092,9 @@ class ExternalApi @Inject constructor(
                 cached?.etag?.let { header(HttpHeaders.IfNoneMatch, it) }
             }
         } catch (e: Exception) {
+            if (throwOnTransient) {
+                throw AccountDiscoveryTransientException("Network request failed", e)
+            }
             // Every caller wraps this in runCatching and silently falls back to null/empty on failure
             // (a genuine network error must never crash a refresh or block the UI) — but that used to
             // make a real failure indistinguishable from "nothing to report" in Logcat too. Logged here,
@@ -1124,6 +1135,12 @@ class ExternalApi @Inject constructor(
         }
         if (!response.status.isSuccess()) {
             Log.w(TAG, "GET $url -> HTTP ${response.status.value}")
+            val status = response.status.value
+            if (throwOnTransient &&
+                (status == 408 || status == 425 || status == 429 || status >= 500 || rateLimited)
+            ) {
+                throw AccountDiscoveryTransientException("Provider returned HTTP $status")
+            }
             return null
         }
         // Every response read here comes from a host the user pointed this app at, which for a
@@ -1133,6 +1150,9 @@ class ExternalApi @Inject constructor(
         val body = response.bodyTextAtMost(MAX_RESPONSE_BYTES)
         if (body == null) {
             Log.w(TAG, "GET $url -> response larger than $MAX_RESPONSE_BYTES bytes, dropped")
+            if (throwOnTransient) {
+                throw AccountDiscoveryTransientException("Provider response was too large")
+            }
         } else {
             responseCache.save(url, response.headers[HttpHeaders.ETag], body)
         }

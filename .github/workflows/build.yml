@@ -42,6 +42,11 @@ jobs:
       # Puts the Android SDK's command line tools on the runner and accepts the SDK licences, which
       # is what lets Gradle fetch the platform this project compiles against on its own.
       - uses: android-actions/setup-android@v3
+        with:
+          # The legacy `tools` package was removed from current SDK repositories. The hosted runner
+          # already includes the SDK platforms/build-tools; this keeps sdkmanager and adb available
+          # without asking it to install that retired package.
+          packages: platform-tools
 
       # Caches the Gradle distribution and the dependency downloads between runs.
       - uses: gradle/actions/setup-gradle@v4
@@ -51,6 +56,14 @@ jobs:
       # (the README sanitizer, the language detection, the icon accent, and so on).
       - name: Build and test
         run: ./gradlew --no-daemon assembleDebug testDebugUnitTest
+
+      - name: Upload AppHarbor development APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: appharbor-debug-${{ github.sha }}
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14
 
       # Only useful when something failed: the HTML report says which test, and why.
       - name: Upload test report

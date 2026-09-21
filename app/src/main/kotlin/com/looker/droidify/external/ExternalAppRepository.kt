@@ -1,6 +1,7 @@
 package com.looker.droidify.external
 
 import android.content.Context
+import android.util.AtomicFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -38,6 +39,9 @@ class ExternalAppRepository @Inject constructor(
     private var isAccountsLoaded = false
     private val _accounts = MutableStateFlow<List<ExternalAccount>>(emptyList())
 
+    private var areDiscoveryJobsLoaded = false
+    private val _discoveryJobs = MutableStateFlow<List<CreatorDiscoveryJob>>(emptyList())
+
     val apps: Flow<List<ExternalApp>> = flow {
         ensureLoaded()
         emitAll(_apps)
@@ -49,6 +53,11 @@ class ExternalAppRepository @Inject constructor(
         emitAll(_accounts)
     }
 
+    val discoveryJobs: Flow<List<CreatorDiscoveryJob>> = flow {
+        ensureDiscoveryJobsLoaded()
+        emitAll(_discoveryJobs)
+    }
+
     suspend fun getApps(): List<ExternalApp> {
         ensureLoaded()
         return _apps.value
@@ -57,6 +66,50 @@ class ExternalAppRepository @Inject constructor(
     suspend fun getAccounts(): List<ExternalAccount> {
         ensureAccountsLoaded()
         return _accounts.value
+    }
+
+    suspend fun getDiscoveryJobs(): List<CreatorDiscoveryJob> {
+        ensureDiscoveryJobsLoaded()
+        return _discoveryJobs.value
+    }
+
+    suspend fun getDiscoveryJob(accountKey: String): CreatorDiscoveryJob? =
+        getDiscoveryJobs().firstOrNull { it.accountKey == accountKey }
+
+    suspend fun tryQueueDiscovery(accountKey: String): Boolean = mutex.withLock {
+        ensureDiscoveryJobsLoadedInternal()
+        if (_discoveryJobs.value.firstOrNull { it.accountKey == accountKey }?.isActive == true) {
+            return@withLock false
+        }
+        val queued = CreatorDiscoveryJob(accountKey = accountKey)
+        val updated = _discoveryJobs.value.filterNot { it.accountKey == accountKey } + queued
+        saveDiscoveryJobsToFile(updated)
+        _discoveryJobs.value = updated
+        true
+    }
+
+    suspend fun updateDiscoveryJob(
+        accountKey: String,
+        transform: (CreatorDiscoveryJob) -> CreatorDiscoveryJob,
+    ) {
+        mutex.withLock {
+            ensureDiscoveryJobsLoadedInternal()
+            val current = _discoveryJobs.value.firstOrNull { it.accountKey == accountKey }
+                ?: CreatorDiscoveryJob(accountKey = accountKey)
+            val next = transform(current).copy(updatedAt = System.currentTimeMillis())
+            val updated = _discoveryJobs.value.filterNot { it.accountKey == accountKey } + next
+            saveDiscoveryJobsToFile(updated)
+            _discoveryJobs.value = updated
+        }
+    }
+
+    suspend fun removeDiscoveryJob(accountKey: String) {
+        mutex.withLock {
+            ensureDiscoveryJobsLoadedInternal()
+            val updated = _discoveryJobs.value.filterNot { it.accountKey == accountKey }
+            saveDiscoveryJobsToFile(updated)
+            _discoveryJobs.value = updated
+        }
     }
 
     /**
@@ -159,6 +212,44 @@ class ExternalAppRepository @Inject constructor(
         }
     }
 
+    private suspend fun ensureDiscoveryJobsLoaded() {
+        if (!areDiscoveryJobsLoaded) {
+            mutex.withLock { ensureDiscoveryJobsLoadedInternal() }
+        }
+    }
+
+    private suspend fun ensureDiscoveryJobsLoadedInternal() {
+        if (!areDiscoveryJobsLoaded) {
+            _discoveryJobs.value = loadDiscoveryJobsFromFile()
+            areDiscoveryJobsLoaded = true
+        }
+    }
+
+    private suspend fun loadDiscoveryJobsFromFile(): List<CreatorDiscoveryJob> = withContext(Dispatchers.IO) {
+        val file = File(context.filesDir, DISCOVERY_JOBS_FILE_NAME)
+        if (!file.exists()) return@withContext emptyList()
+        runCatching {
+            json.decodeFromString(ListSerializer(CreatorDiscoveryJob.serializer()), file.readText())
+        }.getOrElse {
+            it.printStackTrace()
+            emptyList()
+        }
+    }
+
+    private suspend fun saveDiscoveryJobsToFile(jobs: List<CreatorDiscoveryJob>) = withContext(Dispatchers.IO) {
+        val atomicFile = AtomicFile(File(context.filesDir, DISCOVERY_JOBS_FILE_NAME))
+        val stream = atomicFile.startWrite()
+        try {
+            stream.write(
+                json.encodeToString(ListSerializer(CreatorDiscoveryJob.serializer()), jobs).toByteArray(),
+            )
+            atomicFile.finishWrite(stream)
+        } catch (e: Exception) {
+            atomicFile.failWrite(stream)
+            throw e
+        }
+    }
+
     private suspend fun ensureLoaded() {
         if (!isLoaded) {
             mutex.withLock { ensureLoadedInternal() }
@@ -243,5 +334,6 @@ class ExternalAppRepository @Inject constructor(
         private const val FILE_NAME = "external_apps.json"
         private const val LEGACY_FILE_NAME = "github_apps.json"
         private const val ACCOUNTS_FILE_NAME = "external_accounts.json"
+        private const val DISCOVERY_JOBS_FILE_NAME = "creator_discovery_jobs.json"
     }
 }

@@ -87,6 +87,8 @@ import com.looker.droidify.compose.externalApps.ExternalAppsViewModel
 import com.looker.droidify.compose.externalApps.PendingSharedSource
 import com.looker.droidify.data.model.Repo
 import com.looker.droidify.data.trailRepoIcon
+import com.looker.droidify.external.CreatorDiscoveryJob
+import com.looker.droidify.external.CreatorDiscoveryStatus
 import com.looker.droidify.external.ExternalAccount
 import com.looker.droidify.external.ExternalApp
 import com.looker.droidify.model.Repository
@@ -117,7 +119,7 @@ fun RepoListScreen(
     val externalViewModel: ExternalAppsViewModel = hiltViewModel()
     val externalApps by externalViewModel.apps.collectAsStateWithLifecycle()
     val externalAccounts by externalViewModel.accounts.collectAsStateWithLifecycle()
-    val scanningAccounts by externalViewModel.scanningAccounts.collectAsStateWithLifecycle()
+    val discoveryJobs by externalViewModel.accountDiscoveryJobs.collectAsStateWithLifecycle()
     val externalInstalledKeys by externalViewModel.installedKeys.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         externalViewModel.refreshInstalled()
@@ -298,7 +300,7 @@ fun RepoListScreen(
                     ExternalAccountItem(
                         account = account,
                         appCount = accountAppCounts[account.key] ?: 0,
-                        isScanning = account.key in scanningAccounts,
+                        discoveryJob = discoveryJobs[account.key],
                         onOpen = { onAccountClick(account.key) },
                         onToggle = { externalViewModel.setAccountEnabled(account, !account.enabled) },
                         onRescan = { externalViewModel.rescanAccount(account) },
@@ -368,7 +370,7 @@ fun RepoListScreen(
                     ExternalAccountItem(
                         account = account,
                         appCount = accountAppCounts[account.key] ?: 0,
-                        isScanning = account.key in scanningAccounts,
+                        discoveryJob = discoveryJobs[account.key],
                         onOpen = { onAccountClick(account.key) },
                         onToggle = { externalViewModel.setAccountEnabled(account, !account.enabled) },
                         onRescan = { externalViewModel.rescanAccount(account) },
@@ -950,7 +952,7 @@ private fun OverflowMenu(content: @Composable ColumnScope.(dismiss: () -> Unit) 
 private fun ExternalAccountItem(
     account: ExternalAccount,
     appCount: Int,
-    isScanning: Boolean,
+    discoveryJob: CreatorDiscoveryJob?,
     onOpen: () -> Unit,
     onToggle: () -> Unit,
     onRescan: () -> Unit,
@@ -1002,24 +1004,45 @@ private fun ExternalAccountItem(
                     .alpha(contentAlpha),
             ) {
                 Text(text = account.label, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                // Subtitle: the app count once known; "disabled" while off (it isn't scanned until
-                // enabled); a spinner + "searching…" during the first scan of a freshly-enabled account
-                // (isFirstScan); a spinner alone, count untouched, during a later manual rescan of an
-                // already-populated account (the isScanning param, see ExternalAppsViewModel.rescanAccount).
-                val isFirstScan = account.enabled && appCount == 0 && account.lastScan == 0L
+                val isActive = discoveryJob?.isActive == true
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (isFirstScan || isScanning) {
+                    if (isActive) {
                         CircularWavyProgressIndicator(modifier = Modifier.size(12.dp))
                         Spacer(modifier = Modifier.size(6.dp))
                     }
-                    val status = when {
-                        appCount > 0 -> stringResource(R.string.external_account_apps, appCount)
-                        !account.enabled -> stringResource(R.string.external_account_disabled)
-                        isFirstScan -> stringResource(R.string.external_account_scanning)
-                        else -> stringResource(R.string.external_account_apps, 0)
+                    val discoveryStatus = when (discoveryJob?.status) {
+                        CreatorDiscoveryStatus.QUEUED ->
+                            stringResource(R.string.external_account_queued_status)
+                        CreatorDiscoveryStatus.RUNNING -> {
+                            if (discoveryJob.total > 0) {
+                                stringResource(
+                                    R.string.external_account_progress_FORMAT,
+                                    discoveryJob.processed,
+                                    discoveryJob.total,
+                                )
+                            } else {
+                                stringResource(R.string.external_account_scanning)
+                            }
+                        }
+                        CreatorDiscoveryStatus.RETRYING ->
+                            stringResource(R.string.external_account_retrying)
+                        CreatorDiscoveryStatus.FAILED ->
+                            stringResource(
+                                R.string.external_account_failed_FORMAT,
+                                discoveryJob.error.ifBlank {
+                                    stringResource(R.string.external_account_unknown_error)
+                                },
+                            )
+                        CreatorDiscoveryStatus.SUCCEEDED ->
+                            stringResource(R.string.external_account_complete_FORMAT, appCount)
+                        null -> when {
+                            !account.enabled -> stringResource(R.string.external_account_disabled)
+                            account.lastScan == 0L -> stringResource(R.string.external_account_queued_status)
+                            else -> stringResource(R.string.external_account_apps, appCount)
+                        }
                     }
                     Text(
-                        text = "${account.sourceLabel} · $status",
+                        text = "${account.sourceLabel} · $discoveryStatus",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
@@ -1038,6 +1061,7 @@ private fun ExternalAccountItem(
                     Icon(painterResource(R.drawable.ic_tabler_refresh), contentDescription = null)
                 },
                 onClick = { dismiss(); onRescan() },
+                enabled = discoveryJob?.isActive != true,
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.external_remove)) },
