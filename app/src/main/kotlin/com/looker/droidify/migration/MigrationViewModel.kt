@@ -105,15 +105,15 @@ class MigrationViewModel @Inject constructor(
         if (channelMigration.otherChannelInstalled()) return MigrationState.OpenStable
         // Only worth saying anything once the stable build is actually published, which is exactly what
         // the built-in source reports (and what stops it being offered as an update).
-        return if (omnifySource()?.offersOtherReleaseChannel == true) {
+        return if (appHarborSource()?.offersOtherReleaseChannel == true) {
             MigrationState.MoveToStable()
         } else {
             MigrationState.None
         }
     }
 
-    private suspend fun omnifySource(): ExternalApp? = externalAppRepository.apps.first()
-        .firstOrNull { it.key == ExternalApp.OMNIFY_REPO_KEY }
+    private suspend fun appHarborSource(): ExternalApp? = externalAppRepository.apps.first()
+        .firstOrNull { it.key == ExternalApp.APPHARBOR_REPO_KEY }
 
     /**
      * Downloads and installs the stable build from right here, so the prompt that explains the switch
@@ -129,7 +129,7 @@ class MigrationViewModel @Inject constructor(
         if ((_state.value as? MigrationState.MoveToStable)?.installing != false) return
         _state.value = MigrationState.MoveToStable(installing = true)
         viewModelScope.launch {
-            val app = omnifySource()
+            val app = appHarborSource()
             val outcome = app?.let { externalInstaller.installLatest(it) }
             // Started means the installer has it: Android takes over from here, and this app's part is
             // done. Anything else leaves the prompt as it was so it can simply be tried again.

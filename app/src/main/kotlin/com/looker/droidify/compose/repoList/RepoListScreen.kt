@@ -202,7 +202,7 @@ fun RepoListScreen(
     // further down instead of being mixed in alphabetically among these.
     val curatedExternalApps = remember(sortedExternalApps) {
         sortedExternalApps.filter { it.curated && !it.curatedTv }
-            .sortedBy { if (it.key == ExternalApp.OMNIFY_REPO_KEY) "" else it.label.trim().lowercase() }
+            .sortedBy { if (it.key == ExternalApp.APPHARBOR_REPO_KEY) "" else it.label.trim().lowercase() }
     }
     val curatedTvApps = remember(sortedExternalApps) {
         sortedExternalApps.filter { it.curated && it.curatedTv }
@@ -363,7 +363,7 @@ fun RepoListScreen(
                         onRemove = null,
                         // Only Omnify's own source is branded with the app's own launcher icon; future
                         // picks show their real repo/app icon like any other external source.
-                        brandWithAppIcon = app.key == ExternalApp.OMNIFY_REPO_KEY,
+                        brandWithAppIcon = app.key == ExternalApp.APPHARBOR_REPO_KEY,
                     )
                 }
                 items(curatedAccounts, key = { "acc-${it.key}" }) { account ->
@@ -653,7 +653,7 @@ internal fun AppLauncherIcon(modifier: Modifier = Modifier) {
         if (icon != null) {
             Image(bitmap = icon, contentDescription = null, modifier = Modifier.fillMaxSize())
         } else {
-            MonogramAvatar(name = "Omnify")
+            MonogramAvatar(name = "AppHarbor")
         }
     }
 }

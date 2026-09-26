@@ -297,7 +297,7 @@
     <string name="gms_cap_maps_v1_desc">Diese App nutzt die alte Google Maps v1-Bibliothek, die auf entgoogelten Geräten fehlt und von microG nicht bereitgestellt wird (ihre Server wurden 2013 abgeschaltet). Kartenansichten können abstürzen.</string>
     <string name="google_services_detection_caveat">Erkannt anhand der im Manifest der App deklarierten Berechtigungen. Ein entgoogelter Build, der durch Patchen des Codes einer App entsteht, kann eine Berechtigung weiterhin deklariert lassen, selbst nachdem das, was sie genutzt hat, entfernt wurde. Ein Eintrag hier bedeutet daher nicht immer, dass die betreffende Funktion in diesem konkreten Build tatsächlich noch erreichbar ist.</string>
     <string name="allow_unknown_sources">Installation von Apps erlauben</string>
-    <string name="allow_unknown_sources_DESC">Omnify benötigt die Berechtigung, Apps zu installieren. Erlaube sie jetzt, damit du bei deiner ersten Installation nicht unterbrochen wirst.\n\nNachdem du sie in den Einstellungen aktiviert hast, schließt Android Omnify, um die Änderung anzuwenden (besonders auf TV-Geräten). Das ist normal: Öffne die App einfach erneut.</string>
+    <string name="allow_unknown_sources_DESC">AppHarbor benötigt die Berechtigung, Apps zu installieren. Erlaube sie jetzt, damit du bei deiner ersten Installation nicht unterbrochen wirst.\n\nNachdem du sie in den Einstellungen aktiviert hast, schließt Android AppHarbor, um die Änderung anzuwenden (besonders auf TV-Geräten). Das ist normal: Öffne die App einfach erneut.</string>
     <string name="allow">Erlauben</string>
     <string name="later">Später</string>
     <string name="by_author_FORMAT">von %1$s</string>
@@ -365,7 +365,7 @@
     <string name="readme_javascript_title">JavaScript in READMEs</string>
     <string name="readme_javascript_DESC">Nur aktivieren, wenn ein README fehlerhaft aussieht oder Inhalte fehlen.</string>
     <string name="confirm_badge_add_title">Vor dem Hinzufügen eines geteilten Projekts bestätigen</string>
-    <string name="confirm_badge_add_DESC">Vor dem Hinzufügen eines Projekts nachfragen, das über ein \"Get it on Omnify\"-Badge geöffnet oder mit Omnify geteilt wurde, anstatt es sofort hinzuzufügen.</string>
+    <string name="confirm_badge_add_DESC">Vor dem Hinzufügen eines Projekts nachfragen, das über ein \"Get it on AppHarbor\"-Badge geöffnet oder mit AppHarbor geteilt wurde, anstatt es sofort hinzuzufügen.</string>
     <string name="translate">Übersetzen</string>
     <string name="show_original">Original anzeigen</string>
     <string name="translating">Wird übersetzt …</string>
@@ -394,7 +394,7 @@
     <string name="root_compatible_DESC">Diese App kann auf gerooteten Geräten Root-Zugriff nutzen (das ist für die Installation oder Nutzung nicht erforderlich).</string>
     <string name="root_not_granted">Root-Zugriff wurde verweigert oder die Zeit ist abgelaufen</string>
     <string name="shizuku_not_running">Shizuku läuft nicht. Starte es, dann versuche es erneut.</string>
-    <string name="shizuku_permission_needed">Erlaube Omnify in Shizuku, dann versuche es erneut</string>
+    <string name="shizuku_permission_needed">Erlaube AppHarbor in Shizuku, dann versuche es erneut</string>
     <string name="loading">Lädt …</string>
     <string name="issue_tracker">Problemverfolgung</string>
     <string name="translation">Übersetzung</string>
@@ -407,7 +407,7 @@
     <string name="proxy_restart_required">Ein Neustart ist erforderlich, damit die Änderungen wirksam werden.</string>
     <string name="repo_section_external">Externe Paketquellen</string>
     <string name="repo_section_fdroid">F-Droid-Paketquellen</string>
-    <string name="repo_section_omnify_picks">Auswahl von Omnify</string>
+    <string name="repo_section_omnify_picks">Auswahl von AppHarbor</string>
     <string name="repo_tab_info">Info</string>
     <string name="repo_tab_apps">Apps</string>
     <string name="repo_enabled_title">Aktiviert</string>
@@ -418,7 +418,7 @@
     <string name="scroll_to_top">Nach oben scrollen</string>
     <string name="readme_render_failed">Die README-Vorschau konnte nicht angezeigt werden. Du kannst sie aber weiterhin auf der Projektseite lesen.</string>
     <string name="author">Autor</string>
-    <string name="author_repo_subtitle">Omnify-Paketquelle</string>
+    <string name="author_repo_subtitle">AppHarbor-Paketquelle</string>
     <string name="follow_on_github">Auf GitHub folgen</string>
     <string name="fetching_repositories">App-Paketquellen werden abgerufen …</string>
     <string name="first_sync_hint">Der erste Start kann ein paar Minuten dauern, während der Katalog heruntergeladen wird. Bitte warte und schließe die App nicht.</string>

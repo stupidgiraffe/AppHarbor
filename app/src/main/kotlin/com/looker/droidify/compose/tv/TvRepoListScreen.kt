@@ -162,7 +162,7 @@ fun TvRepoListScreen(
     val regularExternalApps = remember(sortedExternalApps) { sortedExternalApps.filter { !it.curated } }
     val curatedExternalApps = remember(sortedExternalApps) {
         sortedExternalApps.filter { it.curated && !it.curatedTv }
-            .sortedBy { if (it.key == ExternalApp.OMNIFY_REPO_KEY) "" else it.label.trim().lowercase() }
+            .sortedBy { if (it.key == ExternalApp.APPHARBOR_REPO_KEY) "" else it.label.trim().lowercase() }
     }
     val curatedTvApps = remember(sortedExternalApps) {
         sortedExternalApps.filter { it.curated && it.curatedTv }
@@ -282,7 +282,7 @@ fun TvRepoListScreen(
                 onToggle = { externalViewModel.setSourceEnabled(app, !app.enabled) },
                 onEdit = null,
                 onRemove = null,
-                brandWithAppIcon = app.key == ExternalApp.OMNIFY_REPO_KEY,
+                brandWithAppIcon = app.key == ExternalApp.APPHARBOR_REPO_KEY,
             )
         }
         items(curatedAccounts, key = { "cur-acc-${it.key}" }) { account ->

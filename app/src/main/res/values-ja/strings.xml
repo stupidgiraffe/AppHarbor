@@ -241,7 +241,7 @@
     <string name="gms_cap_maps_v1_desc">このアプリは従来のGoogle Maps v1 ライブラリを使用していますが、脱Google端末には存在せず、microGでも提供されません (サーバーは2013年に停止済みです)。地図画面がクラッシュする可能性があります。</string>
     <string name="google_services_detection_caveat">アプリのマニフェストに宣言された権限から検出しています。アプリのコードを改変して作られた脱Google版では、実際に使用していた箇所を削除した後も権限の宣言だけが残ることがあるため、ここに表示されているからといって、その機能がこのビルドで実際に使用可能とは限りません。</string>
     <string name="allow_unknown_sources">アプリのインストールを許可</string>
-    <string name="allow_unknown_sources_DESC">Omnify にはアプリをインストールする権限が必要です。最初のインストール時に中断されないよう、今すぐ許可しておきましょう。\n\n設定でこれを有効にすると、変更を適用するためにAndroidがOmnifyを終了させることがあります (特にTVの場合)。これは正常な動作なので、アプリを再度開いてください。</string>
+    <string name="allow_unknown_sources_DESC">AppHarbor にはアプリをインストールする権限が必要です。最初のインストール時に中断されないよう、今すぐ許可しておきましょう。\n\n設定でこれを有効にすると、変更を適用するためにAndroidがAppHarborを終了させることがあります (特にTVの場合)。これは正常な動作なので、アプリを再度開いてください。</string>
     <string name="allow">許可</string>
     <string name="later">後で</string>
     <string name="by_author_FORMAT">作者: %1$s</string>
@@ -315,7 +315,7 @@
     <string name="readme_javascript_title">README内のJavaScript</string>
     <string name="readme_javascript_DESC">READMEの表示が崩れていたり内容が欠けていたりする場合のみ有効にしてください。</string>
     <string name="confirm_badge_add_title">共有されたプロジェクトを追加する前に確認する</string>
-    <string name="confirm_badge_add_DESC">\"Get it on Omnify\" バッジから開いた、またはOmnifyに共有されたプロジェクトを、すぐに追加せずに確認してから追加します。</string>
+    <string name="confirm_badge_add_DESC">\"Get it on AppHarbor\" バッジから開いた、またはAppHarborに共有されたプロジェクトを、すぐに追加せずに確認してから追加します。</string>
     <string name="translate">翻訳</string>
     <string name="show_original">原文を表示</string>
     <string name="translating">翻訳中…</string>
@@ -351,7 +351,7 @@
     <string name="shizuku_legacy_installer">Shizuku/Sui レガシーインストーラー</string>
     <string name="root_not_granted">Root権限が拒否されたか、タイムアウトしました</string>
     <string name="shizuku_not_running">Shizukuが実行されていません。起動してから再試行してください</string>
-    <string name="shizuku_permission_needed">ShizukuでOmnifyを許可してから再試行してください</string>
+    <string name="shizuku_permission_needed">ShizukuでAppHarborを許可してから再試行してください</string>
     <string name="loading">読み込み中…</string>
     <string name="issue_tracker">イシュートラッカー</string>
     <string name="translation">翻訳</string>
@@ -365,7 +365,7 @@
     <string name="proxy_restart_required">変更を反映するには再起動が必要です。</string>
     <string name="repo_section_external">外部リポジトリ</string>
     <string name="repo_section_fdroid">F-Droid リポジトリ</string>
-    <string name="repo_section_omnify_picks">Omnifyのおすすめ</string>
+    <string name="repo_section_omnify_picks">AppHarborのおすすめ</string>
     <string name="repo_tab_info">情報</string>
     <string name="repo_tab_apps">アプリ</string>
     <string name="repo_enabled_title">有効</string>
@@ -377,7 +377,7 @@
     <string name="scroll_to_top">上部へスクロール</string>
     <string name="readme_render_failed">READMEのプレビューを表示できませんでした。プロジェクト自体のページで読むことはできます。</string>
     <string name="author">作者</string>
-    <string name="author_repo_subtitle">Omnify リポジトリ</string>
+    <string name="author_repo_subtitle">AppHarbor リポジトリ</string>
     <string name="follow_on_github">GitHubでフォロー</string>
     <string name="switch_to_default_installer">デフォルトに切り替え</string>
     <string name="repository_not_synced_or_enabled">リポジトリが有効化も同期もされていません</string>

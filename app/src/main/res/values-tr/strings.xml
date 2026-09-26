@@ -297,7 +297,7 @@
     <string name="gms_cap_maps_v1_desc">Bu uygulama, Google\'suz aygıtlarda bulunmayan ve microG tarafından sağlanmayan eski Google Haritalar v1 kütüphanesini kullanır (sunucuları 2013\'te kapatıldı). Harita ekranları çökebilir.</string>
     <string name="google_services_detection_caveat">Uygulamanın manifest dosyasında bildirilen izinlerden tespit edilmiştir. Bir uygulamanın kodu yamalanarak oluşturulan Google\'suz bir sürüm, onu kullanan şey kaldırılsa bile kullanılmayan bir izni bildirilmiş halde bırakabilir; bu nedenle buradaki bir satır, ilgili özelliğin bu belirli sürümde hâlâ gerçekten erişilebilir olduğu anlamına gelmez.</string>
     <string name="allow_unknown_sources">Uygulama kurulumuna izin verin</string>
-    <string name="allow_unknown_sources_DESC">Omnify\'nin uygulama kurmak için izne ihtiyacı var. Kesintiye uğramamak için ilk kurulumunuzda şimdi izin verin.\n\nAyarlardan etkinleştirdikten sonra Android, değişikliği uygulamak için Omnify\'yi kapatır (özellikle TV\'de). Bu normaldir: uygulamayı yeniden açmanız yeterli.</string>
+    <string name="allow_unknown_sources_DESC">AppHarbor\'nin uygulama kurmak için izne ihtiyacı var. Kesintiye uğramamak için ilk kurulumunuzda şimdi izin verin.\n\nAyarlardan etkinleştirdikten sonra Android, değişikliği uygulamak için AppHarbor\'yi kapatır (özellikle TV\'de). Bu normaldir: uygulamayı yeniden açmanız yeterli.</string>
     <string name="allow">İzin ver</string>
     <string name="later">Daha sonra</string>
     <string name="by_author_FORMAT">%1$s tarafından</string>
@@ -365,7 +365,7 @@
     <string name="readme_javascript_title">README\'lerde JavaScript</string>
     <string name="readme_javascript_DESC">Yalnızca bir README bozuk görünüyorsa veya içerik eksikse açın.</string>
     <string name="confirm_badge_add_title">Paylaşılan bir projeyi eklemeden önce onayla</string>
-    <string name="confirm_badge_add_DESC">\"Get it on Omnify\" rozetiyle açılan veya Omnify\'e paylaşılan bir projeyi hemen eklemek yerine, eklemeden önce sor.</string>
+    <string name="confirm_badge_add_DESC">\"Get it on AppHarbor\" rozetiyle açılan veya AppHarbor\'e paylaşılan bir projeyi hemen eklemek yerine, eklemeden önce sor.</string>
     <string name="translate">Çevir</string>
     <string name="show_original">Orijinali göster</string>
     <string name="translating">Çevriliyor…</string>
@@ -394,7 +394,7 @@
     <string name="root_compatible_DESC">Bu uygulama, root\'lu aygıtlarda root erişimi kullanabilir, ancak kurmak veya kullanmak için gerekli değildir.</string>
     <string name="root_not_granted">Root erişimi reddedildi veya zaman aşımına uğradı</string>
     <string name="shizuku_not_running">Shizuku çalışmıyor. Başlat, sonra tekrar dene</string>
-    <string name="shizuku_permission_needed">Shizuku\'da Omnify\'a izin ver, sonra tekrar dene</string>
+    <string name="shizuku_permission_needed">Shizuku\'da AppHarbor\'a izin ver, sonra tekrar dene</string>
     <string name="loading">Yükleniyor…</string>
     <string name="issue_tracker">Sorun takibi</string>
     <string name="translation">Çeviri</string>
@@ -407,7 +407,7 @@
     <string name="proxy_restart_required">Değişikliklerin etkili olması için yeniden başlatma gerekir.</string>
     <string name="repo_section_external">Harici depolar</string>
     <string name="repo_section_fdroid">F-Droid depoları</string>
-    <string name="repo_section_omnify_picks">Omnify\'nin seçimleri</string>
+    <string name="repo_section_omnify_picks">AppHarbor\'nin seçimleri</string>
     <string name="repo_tab_info">Bilgi</string>
     <string name="repo_tab_apps">Uygulamalar</string>
     <string name="repo_enabled_title">Etkin</string>
@@ -418,7 +418,7 @@
     <string name="scroll_to_top">Başa dön</string>
     <string name="readme_render_failed">README önizlemesi görüntülenemedi: yine de projenin kendi sayfasında okuyabilirsiniz</string>
     <string name="author">Geliştirici</string>
-    <string name="author_repo_subtitle">Omnify deposu</string>
+    <string name="author_repo_subtitle">AppHarbor deposu</string>
     <string name="follow_on_github">GitHub\'da takip et</string>
     <string name="fetching_repositories">Uygulama depoları alınıyor…</string>
     <string name="first_sync_hint">İlk açılış, katalog indirilirken birkaç dakika sürebilir. Lütfen bekleyin ve uygulamayı kapatmayın.</string>

@@ -303,7 +303,7 @@
     <string name="gms_cap_maps_v1_desc">Ta aplikacja korzysta ze starszej biblioteki Map Google v1, niedostępnej na odgooglowanych urządzeniach i niezapewnianej przez microG (jej serwery wyłączono w 2013 roku). Ekrany z mapą mogą ulegać awarii.</string>
     <string name="google_services_detection_caveat">Wykryto na podstawie uprawnień zadeklarowanych w manifeście aplikacji. Odgooglowana wersja utworzona przez modyfikację kodu aplikacji może pozostawić zadeklarowane, ale nieużywane uprawnienie, nawet po usunięciu tego, co z niego korzystało, więc dany wiersz nie zawsze oznacza, że dana funkcja jest wciąż faktycznie dostępna w tej konkretnej wersji.</string>
     <string name="allow_unknown_sources">Zezwól na instalowanie aplikacji</string>
-    <string name="allow_unknown_sources_DESC">Omnify potrzebuje uprawnienia do instalowania aplikacji. Zezwól na nie teraz, aby nie przerywać sobie pierwszej instalacji.\n\nPo włączeniu go w ustawieniach Android zamyka Omnify, aby zastosować zmianę (zwłaszcza na TV). To normalne: po prostu otwórz aplikację ponownie.</string>
+    <string name="allow_unknown_sources_DESC">AppHarbor potrzebuje uprawnienia do instalowania aplikacji. Zezwól na nie teraz, aby nie przerywać sobie pierwszej instalacji.\n\nPo włączeniu go w ustawieniach Android zamyka AppHarbor, aby zastosować zmianę (zwłaszcza na TV). To normalne: po prostu otwórz aplikację ponownie.</string>
     <string name="allow">Zezwól</string>
     <string name="later">Później</string>
     <string name="by_author_FORMAT">autor: %1$s</string>
@@ -371,7 +371,7 @@
     <string name="readme_javascript_title">JavaScript w plikach README</string>
     <string name="readme_javascript_DESC">Włącz tylko, jeśli plik README wygląda na uszkodzony lub brakuje w nim treści.</string>
     <string name="confirm_badge_add_title">Potwierdź przed dodaniem udostępnionego projektu</string>
-    <string name="confirm_badge_add_DESC">Pytaj przed dodaniem projektu otwartego przez odznakę \"Get it on Omnify\" lub udostępnionego do Omnify, zamiast dodawać go od razu.</string>
+    <string name="confirm_badge_add_DESC">Pytaj przed dodaniem projektu otwartego przez odznakę \"Get it on AppHarbor\" lub udostępnionego do AppHarbor, zamiast dodawać go od razu.</string>
     <string name="translate">Przetłumacz</string>
     <string name="show_original">Pokaż oryginał</string>
     <string name="translating">Tłumaczenie…</string>
@@ -400,7 +400,7 @@
     <string name="root_compatible_DESC">Ta aplikacja może korzystać z dostępu root na zrootowanych urządzeniach: nie jest on wymagany do jej instalacji ani używania.</string>
     <string name="root_not_granted">Odmówiono dostępu root lub upłynął limit czasu</string>
     <string name="shizuku_not_running">Shizuku nie działa. Uruchom Shizuku i spróbuj ponownie.</string>
-    <string name="shizuku_permission_needed">Zezwól Omnify w Shizuku, a następnie spróbuj ponownie</string>
+    <string name="shizuku_permission_needed">Zezwól AppHarbor w Shizuku, a następnie spróbuj ponownie</string>
     <string name="loading">Ładowanie…</string>
     <string name="issue_tracker">Śledzenie zgłoszeń</string>
     <string name="translation">Tłumaczenie</string>
@@ -413,7 +413,7 @@
     <string name="proxy_restart_required">Wymagany restart, aby zastosować zmiany.</string>
     <string name="repo_section_external">Repozytoria zewnętrzne</string>
     <string name="repo_section_fdroid">Repozytoria F-Droid</string>
-    <string name="repo_section_omnify_picks">Wybór Omnify</string>
+    <string name="repo_section_omnify_picks">Wybór AppHarbor</string>
     <string name="repo_tab_info">Informacje</string>
     <string name="repo_tab_apps">Aplikacje</string>
     <string name="repo_enabled_title">Włączone</string>
@@ -424,7 +424,7 @@
     <string name="scroll_to_top">Przewiń na górę</string>
     <string name="readme_render_failed">Nie udało się wyświetlić podglądu pliku README: nadal możesz go przeczytać na stronie projektu</string>
     <string name="author">Autor</string>
-    <string name="author_repo_subtitle">Repozytorium Omnify</string>
+    <string name="author_repo_subtitle">Repozytorium AppHarbor</string>
     <string name="follow_on_github">Obserwuj na GitHub</string>
     <string name="fetching_repositories">Pobieranie repozytoriów aplikacji…</string>
     <string name="first_sync_hint">Pierwsze uruchomienie może potrwać kilka minut, ponieważ w tym czasie pobierany jest katalog. Poczekaj i nie zamykaj aplikacji.</string>

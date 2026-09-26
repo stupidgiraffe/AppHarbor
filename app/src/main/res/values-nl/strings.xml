@@ -262,7 +262,7 @@
     <string name="gms_cap_maps_v1_desc">Deze app gebruikt de verouderde Google Maps v1-bibliotheek, die niet aanwezig is op apparaten zonder Google en ook niet door microG wordt geboden (de servers ervan zijn in 2013 stopgezet). Kaartschermen kunnen hierdoor crashen.</string>
     <string name="google_services_detection_caveat">Gedetecteerd op basis van de rechten die in het manifest van de app zijn gedeclareerd. Een Google-vrije build die gemaakt is door de code van een app aan te passen, kan een ongebruikt recht gedeclareerd laten staan, ook nadat het onderdeel dat het gebruikte verwijderd is. Een vermelding hier betekent dus niet altijd dat de functie in deze specifieke build nog echt bereikbaar is.</string>
     <string name="allow_unknown_sources">Installeren van apps toestaan</string>
-    <string name="allow_unknown_sources_DESC">Omnify heeft toestemming nodig om apps te installeren. Sta dit nu toe, zodat je niet wordt onderbroken bij je eerste installatie.\n\nNadat je dit in de instellingen hebt ingeschakeld, sluit Android Omnify af om de wijziging toe te passen (vooral op tv). Dit is normaal: open de app gewoon opnieuw.</string>
+    <string name="allow_unknown_sources_DESC">AppHarbor heeft toestemming nodig om apps te installeren. Sta dit nu toe, zodat je niet wordt onderbroken bij je eerste installatie.\n\nNadat je dit in de instellingen hebt ingeschakeld, sluit Android AppHarbor af om de wijziging toe te passen (vooral op tv). Dit is normaal: open de app gewoon opnieuw.</string>
     <string name="allow">Toestaan</string>
     <string name="later">Later</string>
     <string name="by_author_FORMAT">door %1$s</string>
@@ -330,7 +330,7 @@
     <string name="readme_javascript_title">JavaScript in READMEs</string>
     <string name="readme_javascript_DESC">Schakel dit alleen in als een README er kapot uitziet of inhoud lijkt te missen.</string>
     <string name="confirm_badge_add_title">Bevestigen voordat een gedeeld project wordt toegevoegd</string>
-    <string name="confirm_badge_add_DESC">Vraag bevestiging voordat een project dat via een \"Get it on Omnify\"-badge is geopend of met Omnify is gedeeld wordt toegevoegd, in plaats van het meteen toe te voegen.</string>
+    <string name="confirm_badge_add_DESC">Vraag bevestiging voordat een project dat via een \"Get it on AppHarbor\"-badge is geopend of met AppHarbor is gedeeld wordt toegevoegd, in plaats van het meteen toe te voegen.</string>
     <string name="translate">Vertalen</string>
     <string name="show_original">Origineel tonen</string>
     <string name="translating">Vertalen…</string>
@@ -361,7 +361,7 @@
     <string name="root_compatible_DESC">Deze app kan roottoegang gebruiken op apparaten met root: dit is niet vereist om de app te installeren of te gebruiken.</string>
     <string name="root_not_granted">Roottoegang geweigerd of time-out</string>
     <string name="shizuku_not_running">Shizuku is niet actief. Start het op en probeer het opnieuw</string>
-    <string name="shizuku_permission_needed">Sta Omnify toe in Shizuku en probeer het opnieuw</string>
+    <string name="shizuku_permission_needed">Sta AppHarbor toe in Shizuku en probeer het opnieuw</string>
     <string name="loading">Laden…</string>
     <string name="issue_tracker">Issuetracker</string>
     <string name="translation">Vertaling</string>
@@ -374,7 +374,7 @@
     <string name="proxy_restart_required">Herstart vereist om de wijzigingen toe te passen.</string>
     <string name="repo_section_external">Externe bronnen</string>
     <string name="repo_section_fdroid">F-Droid-bronnen</string>
-    <string name="repo_section_omnify_picks">Omnify\'s keuzes</string>
+    <string name="repo_section_omnify_picks">AppHarbor\'s keuzes</string>
     <string name="repo_tab_info">Info</string>
     <string name="repo_tab_apps">Apps</string>
     <string name="repo_enabled_title">Ingeschakeld</string>
@@ -386,7 +386,7 @@
     <string name="scroll_to_top">Naar boven scrollen</string>
     <string name="readme_render_failed">De voorvertoning van de README kon niet worden weergegeven: je kunt deze nog steeds lezen op de eigen pagina van het project</string>
     <string name="author">Auteur</string>
-    <string name="author_repo_subtitle">Omnify-bron</string>
+    <string name="author_repo_subtitle">AppHarbor-bron</string>
     <string name="follow_on_github">Volgen op GitHub</string>
     <string name="repository_not_synced_or_enabled">Bron niet ingeschakeld en niet gesynchroniseerd</string>
     <string name="action_sync_repo">Synchroniseren</string>

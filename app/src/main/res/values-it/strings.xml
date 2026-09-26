@@ -300,7 +300,7 @@
     <string name="gms_cap_maps_v1_desc">Questa app utilizza la libreria legacy Google Maps v1, assente sui dispositivi de-googlizzati e non fornita da microG (i suoi server sono stati chiusi nel 2013). Le schermate con mappe potrebbero andare in crash.</string>
     <string name="google_services_detection_caveat">Rilevato dai permessi dichiarati nel manifest dell\'app. Una build de-googlizzata ottenuta modificando il codice di un\'app può lasciare un permesso dichiarato anche dopo aver rimosso ciò che lo utilizzava, quindi una voce qui non significa sempre che la funzione sia ancora realmente raggiungibile in questa build specifica.</string>
     <string name="allow_unknown_sources">Consenti l\'installazione di app</string>
-    <string name="allow_unknown_sources_DESC">Omnify ha bisogno del permesso per installare app. Consentilo ora per non essere interrotto alla tua prima installazione.\n\nDopo averlo attivato nelle impostazioni, Android chiude Omnify per applicare la modifica (soprattutto su TV). È normale: basta riaprire l\'app.</string>
+    <string name="allow_unknown_sources_DESC">AppHarbor ha bisogno del permesso per installare app. Consentilo ora per non essere interrotto alla tua prima installazione.\n\nDopo averlo attivato nelle impostazioni, Android chiude AppHarbor per applicare la modifica (soprattutto su TV). È normale: basta riaprire l\'app.</string>
     <string name="allow">Consenti</string>
     <string name="later">Più tardi</string>
     <string name="by_author_FORMAT">di %1$s</string>
@@ -368,7 +368,7 @@
     <string name="readme_javascript_title">JavaScript nei README</string>
     <string name="readme_javascript_DESC">Attivalo solo se un README appare non funzionante o con contenuti mancanti.</string>
     <string name="confirm_badge_add_title">Conferma prima di aggiungere un progetto condiviso</string>
-    <string name="confirm_badge_add_DESC">Chiedi conferma prima di aggiungere un progetto aperto tramite un badge \"Get it on Omnify\" o condiviso con Omnify, invece di aggiungerlo subito.</string>
+    <string name="confirm_badge_add_DESC">Chiedi conferma prima di aggiungere un progetto aperto tramite un badge \"Get it on AppHarbor\" o condiviso con AppHarbor, invece di aggiungerlo subito.</string>
     <string name="translate">Traduci</string>
     <string name="show_original">Mostra originale</string>
     <string name="translating">Traduzione…</string>
@@ -397,7 +397,7 @@
     <string name="root_compatible_DESC">Questa app può usare l\'accesso root sui dispositivi rootati: non è obbligatorio per installarla o usarla.</string>
     <string name="root_not_granted">Accesso root negato o tempo scaduto</string>
     <string name="shizuku_not_running">Shizuku non è in esecuzione. Avvialo e riprova</string>
-    <string name="shizuku_permission_needed">Consenti a Omnify in Shizuku, poi riprova</string>
+    <string name="shizuku_permission_needed">Consenti a AppHarbor in Shizuku, poi riprova</string>
     <string name="loading">Caricamento…</string>
     <string name="issue_tracker">Tracciamento dei problemi</string>
     <string name="translation">Traduzione</string>
@@ -410,7 +410,7 @@
     <string name="proxy_restart_required">Riavvio necessario per applicare le modifiche.</string>
     <string name="repo_section_external">Repository esterni</string>
     <string name="repo_section_fdroid">Repository F-Droid</string>
-    <string name="repo_section_omnify_picks">Scelte di Omnify</string>
+    <string name="repo_section_omnify_picks">Scelte di AppHarbor</string>
     <string name="repo_tab_info">Info</string>
     <string name="repo_tab_apps">App</string>
     <string name="repo_enabled_title">Attivato</string>
@@ -421,7 +421,7 @@
     <string name="scroll_to_top">Torna in cima</string>
     <string name="readme_render_failed">Non è stato possibile visualizzare l\'anteprima del README: puoi comunque leggerlo sulla pagina del progetto</string>
     <string name="author">Autore</string>
-    <string name="author_repo_subtitle">Repository Omnify</string>
+    <string name="author_repo_subtitle">Repository AppHarbor</string>
     <string name="follow_on_github">Segui su GitHub</string>
     <string name="fetching_repositories">Recupero dei repository di app…</string>
     <string name="first_sync_hint">Il primo avvio può richiedere qualche minuto durante lo scaricamento del catalogo. Attendi e non chiudere l\'app.</string>
