@@ -69,13 +69,11 @@ jobs:
           cat > release-notes.md <<EOF
           # AppHarbor Development Build
 
-          Latest tested development build from `main`.
+          Latest tested development build from **main**.
 
-          | | |
-          | --- | --- |
-          | **Version** | `${version}.d` |
-          | **Commit** | `${short_sha}` |
-          | **Channel** | Development / debug |
+          - **Version:** ${version}.d
+          - **Commit:** ${short_sha}
+          - **Channel:** Development / debug
 
           ## Install
 
