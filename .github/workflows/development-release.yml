@@ -51,36 +51,67 @@ jobs:
           grep -q "application-label:'AppHarbor Dev'" apk-badging.txt
           grep -E "^(package:|application-label:)" apk-badging.txt
 
-      - name: Prepare durable development asset
-        id: asset
+      - name: Prepare development release
+        id: release
         shell: bash
         run: |
           set -euo pipefail
           version="$(awk -F'"' '/^val latestVersionName = / { print $2; exit }' app/build.gradle.kts)"
           test -n "$version"
-          short_sha="${GITHUB_SHA:0:12}"
+          short_sha="${GITHUB_SHA:0:8}"
           source_apk="$(find app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print -quit)"
           test -n "$source_apk"
-          apk="AppHarbor-dev-debug-v${version}-${short_sha}.apk"
+
+          apk="AppHarbor-v${version}-dev.apk"
           cp "$source_apk" "$apk"
           sha256sum "$apk" > "$apk.sha256"
+
+          cat > release-notes.md <<EOF
+# AppHarbor Development Build
+
+Latest tested development build from `main`.
+
+| | |
+| --- | --- |
+| **Version** | `${version}.d` |
+| **Commit** | `${short_sha}` |
+| **Channel** | Development / debug |
+
+## Install
+
+Download **${apk}** from **Assets** below and install it on Android.
+
+> This is a development build signed by GitHub Actions, not a production release. If Android reports a signing conflict with an older debug build, uninstall that older debug build first.
+
+## Verification
+
+A SHA-256 checksum is attached as **${apk}.sha256**.
+EOF
+
           echo "apk=$apk" >> "$GITHUB_OUTPUT"
-          echo "tag=dev-${short_sha}" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "short_sha=$short_sha" >> "$GITHUB_OUTPUT"
 
-      - name: Publish GitHub development pre-release
+      - name: Publish rolling GitHub development release
         env:
           GH_TOKEN: ${{ github.token }}
-          APK: ${{ steps.asset.outputs.apk }}
-          TAG: ${{ steps.asset.outputs.tag }}
-          SHORT_SHA: ${{ steps.asset.outputs.short_sha }}
+          APK: ${{ steps.release.outputs.apk }}
+          VERSION: ${{ steps.release.outputs.version }}
+          SHORT_SHA: ${{ steps.release.outputs.short_sha }}
+          TAG: appharbor-dev
         shell: bash
         run: |
           set -euo pipefail
-          notes="Development/debug build of AppHarbor from commit ${GITHUB_SHA}. This is an installable test build, not a production-signed release. Debug signing is CI-generated and may require uninstalling an older development build before installing a newer one."
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$APK" "$APK.sha256" --clobber
-            gh release edit "$TAG" --title "AppHarbor development ${SHORT_SHA}" --notes "$notes" --prerelease
-          else
-            gh release create "$TAG" "$APK" "$APK.sha256" --target "$GITHUB_SHA" --title "AppHarbor development ${SHORT_SHA}" --notes "$notes" --prerelease
-          fi
+
+          # Remove the previous rolling release and the old commit-named dev
+          # releases so the Releases page stays clean.
+          gh release list --limit 100 --json tagName,isPrerelease --jq '.[] | select(.isPrerelease == true) | .tagName' |
+          while read -r old_tag; do
+            case "$old_tag" in
+              appharbor-dev|dev-*)
+                gh release delete "$old_tag" --cleanup-tag -y || true
+                ;;
+            esac
+          done
+
+          gh release create "$TAG" "$APK" "$APK.sha256"             --target "$GITHUB_SHA"             --title "AppHarbor Dev v${VERSION}"             --notes-file release-notes.md             --prerelease             --latest=false
