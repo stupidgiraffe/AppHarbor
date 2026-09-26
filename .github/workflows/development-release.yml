@@ -67,26 +67,26 @@ jobs:
           sha256sum "$apk" > "$apk.sha256"
 
           cat > release-notes.md <<EOF
-# AppHarbor Development Build
+          # AppHarbor Development Build
 
-Latest tested development build from `main`.
+          Latest tested development build from `main`.
 
-| | |
-| --- | --- |
-| **Version** | `${version}.d` |
-| **Commit** | `${short_sha}` |
-| **Channel** | Development / debug |
+          | | |
+          | --- | --- |
+          | **Version** | `${version}.d` |
+          | **Commit** | `${short_sha}` |
+          | **Channel** | Development / debug |
 
-## Install
+          ## Install
 
-Download **${apk}** from **Assets** below and install it on Android.
+          Download **${apk}** from **Assets** below and install it on Android.
 
-> This is a development build signed by GitHub Actions, not a production release. If Android reports a signing conflict with an older debug build, uninstall that older debug build first.
+          > This is a development build signed by GitHub Actions, not a production release. If Android reports a signing conflict with an older debug build, uninstall that older debug build first.
 
-## Verification
+          ## Verification
 
-A SHA-256 checksum is attached as **${apk}.sha256**.
-EOF
+          A SHA-256 checksum is attached as **${apk}.sha256**.
+          EOF
 
           echo "apk=$apk" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
@@ -97,14 +97,11 @@ EOF
           GH_TOKEN: ${{ github.token }}
           APK: ${{ steps.release.outputs.apk }}
           VERSION: ${{ steps.release.outputs.version }}
-          SHORT_SHA: ${{ steps.release.outputs.short_sha }}
           TAG: appharbor-dev
         shell: bash
         run: |
           set -euo pipefail
 
-          # Remove the previous rolling release and the old commit-named dev
-          # releases so the Releases page stays clean.
           gh release list --limit 100 --json tagName,isPrerelease --jq '.[] | select(.isPrerelease == true) | .tagName' |
           while read -r old_tag; do
             case "$old_tag" in
@@ -114,4 +111,4 @@ EOF
             esac
           done
 
-          gh release create "$TAG" "$APK" "$APK.sha256"             --target "$GITHUB_SHA"             --title "AppHarbor Dev v${VERSION}"             --notes-file release-notes.md             --prerelease             --latest=false
+          gh release create "$TAG" "$APK" "$APK.sha256" --target "$GITHUB_SHA" --title "AppHarbor Dev v${VERSION}" --notes-file release-notes.md --prerelease --latest=false
