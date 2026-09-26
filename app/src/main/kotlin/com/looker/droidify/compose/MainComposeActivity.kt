@@ -118,27 +118,26 @@ class MainComposeActivity : ComponentActivity() {
         private const val FIRST_RUN_PREFS = "first_run"
         private const val KEY_UNKNOWN_SOURCES_PROMPTED = "unknown_sources_prompted"
 
-        // Seeded once on first run: Omnify's own repo as the active update channel, plus the developer's
-        // whole GitHub account as a separate, opt-in (disabled) source.
-        private const val OMNIFY_SOURCE_OWNER = "Victor-root"
-        private const val OMNIFY_SOURCE_REPO = "Omnify"
+        // These inherited preference keys are compatibility state: existing installs already persist
+        // them, so renaming them would make one-time migrations run again.
+        private const val APPHARBOR_SOURCE_OWNER = "stupidgiraffe"
+        private const val APPHARBOR_SOURCE_REPO = "AppHarbor"
+        private const val LEGACY_OMNIFY_REPO_KEY = "GITHUB/Victor-root/Omnify"
         private const val KEY_OMNIFY_SEED = "omnify_seed_v6"
         private const val KEY_OMNIFY_CURATED_MIGRATED = "omnify_curated_migrated_v1"
+        private const val KEY_APPHARBOR_SOURCE_MIGRATED = "appharbor_source_migrated_v1"
         private const val KEY_TV_PACK_SEEDED_V1 = "tv_pack_seeded_v1"
         private const val KEY_TV_PACK_ICONS_BACKFILLED_V1 = "tv_pack_icons_backfilled_v1"
         private const val KEY_TV_PACK_CURATEDTV_BACKFILLED_V1 = "tv_pack_curatedtv_backfilled_v1"
         private const val KEY_ADAPTIVE_ICON_RESCAN_V1 = "adaptive_icon_rescan_v1"
     }
 
-    /** Omnify's own repo (github.com/Victor-root/Omnify) as the built-in update channel, active by
-     *  default. [packageName] is the *running* build's applicationId (BuildConfig.APPLICATION_ID), so the
-     *  source reports the version actually installed — a debug build shows its own version instead of a
-     *  stale seeded value or an unrelated stable install. [installedTag] tracks the release channel for
-     *  update detection. */
-    private fun omnifyUpdateSource(): ExternalApp = ExternalApp(
+    /** AppHarbor's repository as the built-in update channel. The application ID stays compatible
+     *  with the inherited Omnify identity while release discovery follows AppHarbor itself. */
+    private fun appHarborUpdateSource(): ExternalApp = ExternalApp(
         provider = SourceProvider.GITHUB,
-        owner = OMNIFY_SOURCE_OWNER,
-        repo = OMNIFY_SOURCE_REPO,
+        owner = APPHARBOR_SOURCE_OWNER,
+        repo = APPHARBOR_SOURCE_REPO,
         label = getString(R.string.application_name),
         packageName = BuildConfig.APPLICATION_ID,
         installedTag = BuildConfig.VERSION_NAME,
@@ -149,11 +148,11 @@ class MainComposeActivity : ComponentActivity() {
     /** The developer's whole GitHub account as a second, opt-in source: disabled by default (the user
      *  enables it to get every app of the account), forks included (the apps are published as forks),
      *  labelled with the account name but shown with the app's own logo (see [ExternalAccount.OMNIFY_KEY]).
-     *  The Omnify repo above is tracked separately, so the account won't absorb it. */
+     *  The AppHarbor repo above is tracked separately, so the account won't absorb it. */
     private fun victorAccount(): ExternalAccount = ExternalAccount(
         provider = SourceProvider.GITHUB,
-        owner = OMNIFY_SOURCE_OWNER,
-        label = OMNIFY_SOURCE_OWNER,
+        owner = "Victor-root",
+        label = "Victor-root",
         description = getString(R.string.external_account_omnify_description),
         enabled = false,
         includeForks = true,
@@ -161,7 +160,7 @@ class MainComposeActivity : ComponentActivity() {
     )
 
     /**
-     * A hand-picked set of FOSS Android TV apps, seeded once as disabled "Omnify's picks" entries (see
+     * A hand-picked set of FOSS Android TV apps, seeded once as disabled "AppHarbor's picks" entries (see
      * [KEY_TV_PACK_SEEDED_V1]). F-Droid's catalogue turned out to have almost nothing genuinely tagged
      * for TV (the `android.software.leanback` manifest feature is nearly unused catalogue-wide — checked
      * against the live index: 3 packages total across the main, archive and IzzyOnDroid repos combined),
@@ -493,29 +492,38 @@ class MainComposeActivity : ComponentActivity() {
                     .forEach { repository.enableRepository(it, enable = true) }
             }
 
-            // One-time: seed Omnify's own repo as the active update channel, plus the developer's whole
-            // GitHub account as a separate, opt-in (disabled) source. Guarded by a flag (not by "is the
-            // list empty"), so if the user removes either it stays removed. Clean up the previous
-            // whole-account-enabled seed shape (its discovered apps) before re-seeding.
+            // Seed AppHarbor's own update source on a fresh install while keeping Victor-root's
+            // upstream account available as a separate, opt-in source.
             if (!firstRunPrefs.getBoolean(KEY_OMNIFY_SEED, false)) {
                 externalAppRepository.removeAppsByAccount(ExternalAccount.OMNIFY_KEY)
-                // upsert (not add): the Omnify source already exists from an earlier seed, and addApp is
-                // insert-only, so it would keep the stale packageName/version. Replace it so the corrected
-                // fields (running build's package) actually take effect.
-                externalAppRepository.upsertApp(omnifyUpdateSource())
+                externalAppRepository.upsertApp(appHarborUpdateSource())
                 externalAppRepository.upsertAccount(victorAccount())
                 firstRunPrefs.edit().putBoolean(KEY_OMNIFY_SEED, true).apply()
             }
 
-            // One-time: backfill curated = true onto the already-seeded Omnify source and account, for
-            // an install that seeded them before the "Omnify's picks" section existed — the
-            // KEY_OMNIFY_SEED guard above only re-runs the full seed once, so an existing entry would
-            // otherwise keep the old default (curated = false) forever. Only touches that one field, so
-            // any other customization (e.g. the user disabling it) survives untouched, unlike re-running
-            // the full seed above.
+            // Existing installs may already have the inherited Omnify repository pinned as their own
+            // update source. Move that record to AppHarbor once, preserving the user's enabled/mute
+            // choices. If the user already removed it, absence is respected and no replacement is added.
+            if (!firstRunPrefs.getBoolean(KEY_APPHARBOR_SOURCE_MIGRATED, false)) {
+                externalAppRepository.getApps()
+                    .firstOrNull { it.key == LEGACY_OMNIFY_REPO_KEY }
+                    ?.let { legacy ->
+                        externalAppRepository.removeApp(legacy.key)
+                        externalAppRepository.upsertApp(
+                            appHarborUpdateSource().copy(
+                                enabled = legacy.enabled,
+                                muteUpdates = legacy.muteUpdates,
+                            ),
+                        )
+                    }
+                firstRunPrefs.edit().putBoolean(KEY_APPHARBOR_SOURCE_MIGRATED, true).apply()
+            }
+
+            // Keep the inherited migration flag name for install compatibility, but apply the curated
+            // marker to AppHarbor's own source. Victor-root's account remains an explicit upstream credit.
             if (!firstRunPrefs.getBoolean(KEY_OMNIFY_CURATED_MIGRATED, false)) {
                 externalAppRepository.getApps()
-                    .firstOrNull { it.key == ExternalApp.OMNIFY_REPO_KEY && !it.curated }
+                    .firstOrNull { it.key == ExternalApp.APPHARBOR_REPO_KEY && !it.curated }
                     ?.let { externalAppRepository.upsertApp(it.copy(curated = true)) }
                 externalAppRepository.getAccounts()
                     .firstOrNull { it.key == ExternalAccount.OMNIFY_KEY && !it.curated }

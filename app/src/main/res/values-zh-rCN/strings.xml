@@ -275,7 +275,7 @@
     <string name="gms_cap_maps_v1_desc">此应用使用了旧版 Google 地图 v1 库，该库在去 Google 化设备上不存在，microG 也未提供（其服务器已于 2013 年关闭）。相关地图页面可能会崩溃。</string>
     <string name="google_services_detection_caveat">此检测基于应用清单中声明的权限。通过修改应用代码制作的去 Google 化版本，即使移除了使用某权限的功能，也可能仍在清单中保留该权限声明，因此此处列出的项目不一定代表该功能在此特定版本中仍然实际可用。</string>
     <string name="allow_unknown_sources">允许安装应用</string>
-    <string name="allow_unknown_sources_DESC">Omnify 需要获得安装应用的权限。请现在允许，以免在您首次安装时被打断。\n\n在设置中启用该权限后，Android 会关闭 Omnify 以应用更改（在电视上尤其如此）。这是正常现象，只需重新打开应用即可。</string>
+    <string name="allow_unknown_sources_DESC">AppHarbor 需要获得安装应用的权限。请现在允许，以免在您首次安装时被打断。\n\n在设置中启用该权限后，Android 会关闭 AppHarbor 以应用更改（在电视上尤其如此）。这是正常现象，只需重新打开应用即可。</string>
     <string name="allow">允许</string>
     <string name="later">稍后</string>
     <string name="by_author_FORMAT">由 %1$s</string>
@@ -343,7 +343,7 @@
     <string name="readme_javascript_title">README 中的 JavaScript</string>
     <string name="readme_javascript_DESC">仅当 README 显示异常或内容缺失时启用。</string>
     <string name="confirm_badge_add_title">添加共享项目前进行确认</string>
-    <string name="confirm_badge_add_DESC">通过\"Get it on Omnify\"徽章打开或分享到 Omnify 的项目，先询问后添加，而不是直接添加。</string>
+    <string name="confirm_badge_add_DESC">通过\"Get it on AppHarbor\"徽章打开或分享到 AppHarbor 的项目，先询问后添加，而不是直接添加。</string>
     <string name="translate">翻译</string>
     <string name="show_original">显示原文</string>
     <string name="translating">翻译中…</string>
@@ -374,7 +374,7 @@
     <string name="root_compatible_DESC">此应用可以在已 root 的设备上使用 root 权限，但安装或使用该应用并不需要 root。</string>
     <string name="root_not_granted">Root 权限被拒绝或超时</string>
     <string name="shizuku_not_running">Shizuku 未运行。请启动后重试</string>
-    <string name="shizuku_permission_needed">请在 Shizuku 中允许 Omnify，然后重试</string>
+    <string name="shizuku_permission_needed">请在 Shizuku 中允许 AppHarbor，然后重试</string>
     <string name="loading">加载中…</string>
     <string name="issue_tracker">问题追踪器</string>
     <string name="translation">翻译</string>
@@ -387,7 +387,7 @@
     <string name="proxy_restart_required">需要重启才能使更改生效。</string>
     <string name="repo_section_external">外部存储库</string>
     <string name="repo_section_fdroid">F-Droid 存储库</string>
-    <string name="repo_section_omnify_picks">Omnify 精选</string>
+    <string name="repo_section_omnify_picks">AppHarbor 精选</string>
     <string name="repo_tab_info">信息</string>
     <string name="repo_tab_apps">应用</string>
     <string name="repo_enabled_title">已启用</string>
@@ -399,7 +399,7 @@
     <string name="scroll_to_top">回到顶部</string>
     <string name="readme_render_failed">无法显示 README 预览，您仍可以在项目自己的页面上查看</string>
     <string name="author">作者</string>
-    <string name="author_repo_subtitle">Omnify 存储库</string>
+    <string name="author_repo_subtitle">AppHarbor 存储库</string>
     <string name="follow_on_github">在 GitHub 上关注</string>
     <string name="force_sync_repositories">强制同步存储库</string>
     <string name="copy_error_details">复制错误详情</string>

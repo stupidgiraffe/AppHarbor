@@ -19,5 +19,5 @@ dependencyResolutionManagement {
 	}
 }
 
-rootProject.name = "Omnify"
+rootProject.name = "AppHarbor"
 include(":app")

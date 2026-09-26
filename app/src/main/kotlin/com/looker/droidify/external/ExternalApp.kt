@@ -345,7 +345,7 @@ data class ExternalApp(
 
     val offersOtherReleaseChannel: Boolean
         get() {
-            if (key != OMNIFY_REPO_KEY) return false
+            if (key != APPHARBOR_REPO_KEY) return false
             // Walking the switch through without publishing a release to trigger it (see the build
             // file). Never true in a release build, whatever is passed to the build.
             if (BuildConfig.SIMULATE_CHANNEL_SWITCH) return true
@@ -362,9 +362,9 @@ data class ExternalApp(
         get() = latestApkName?.let(::dottedVersionOrNull) ?: latestTag?.let(::dottedVersionOrNull)
 
     companion object {
-        /** Key of the built-in Omnify repo source (github.com/Victor-root/Omnify). Pinned to the top of
-         *  the sources list and only toggleable (no edit/remove) since it's the app's own channel. */
-        const val OMNIFY_REPO_KEY = "GITHUB/Victor-root/Omnify"
+        /** Key of AppHarbor's built-in update source. Pinned to the top of the sources list and
+         *  only toggleable (no edit/remove) since it is the app's own channel. */
+        const val APPHARBOR_REPO_KEY = "GITHUB/stupidgiraffe/AppHarbor"
 
         /** What marks a build, a tag or an APK file name as belonging to the beta channel. Gradle puts
          *  it there itself (the build type's versionNameSuffix, which the APK file name is derived

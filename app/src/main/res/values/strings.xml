@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="application_name" translatable="false">Omnify</string>
+    <string name="application_name" translatable="false">AppHarbor</string>
     <!-- Fixed brand name for the "installed via …" attribution, unlike application_name (overridden per
-         build flavour, e.g. "Omnify (D)" in debug) — an app installed through Omnify should read the
+         build flavour, e.g. "AppHarbor (D)" in debug) — an app installed through AppHarbor should read the
          same regardless of which build variant did the installing. -->
-    <string name="installer_self_name" translatable="false">Omnify</string>
+    <string name="installer_self_name" translatable="false">AppHarbor</string>
     <string name="cleartext_allowed" translatable="false">false</string>
     <!-- Watermark drawn over the header logo on the canary test build only; kept untranslated since
          it's a build-identification marker, not user-facing app content. -->
@@ -52,7 +52,7 @@
     <string name="gms_cap_maps_v1_desc">This app uses the legacy Google Maps v1 library, absent on de-Googled devices and not provided by microG (its servers were shut down in 2013). Map screens may crash.</string>
     <string name="google_services_detection_caveat">Detected from the permissions declared in the app\'s manifest. A de-Googled build made by patching an app\'s code can leave an unused permission declared even after removing what used it, so a row here does not always mean the capability is still actually reachable in this specific build.</string>
     <string name="allow_unknown_sources">Allow installing apps</string>
-    <string name="allow_unknown_sources_DESC">Omnify needs permission to install apps. Allow it now so you\'re not interrupted at your first install.\n\nAfter you enable it in settings, Android closes Omnify to apply the change (especially on TV). This is normal: just reopen the app.</string>
+    <string name="allow_unknown_sources_DESC">AppHarbor needs permission to install apps. Allow it now so you\'re not interrupted at your first install.\n\nAfter you enable it in settings, Android closes AppHarbor to apply the change (especially on TV). This is normal: just reopen the app.</string>
     <string name="allow">Allow</string>
     <string name="later">Later</string>
     <string name="application">App</string>
@@ -166,7 +166,7 @@
     <string name="readme_javascript_title">JavaScript in READMEs</string>
     <string name="readme_javascript_DESC">Turn on only if a README looks broken or missing content.</string>
     <string name="confirm_badge_add_title">Confirm before adding a shared project</string>
-    <string name="confirm_badge_add_DESC">Ask before adding a project opened through a \"Get it on Omnify\" badge or shared into Omnify, instead of adding it straight away.</string>
+    <string name="confirm_badge_add_DESC">Ask before adding a project opened through a \"Get it on AppHarbor\" badge or shared into AppHarbor, instead of adding it straight away.</string>
     <string name="translate">Translate</string>
     <string name="show_original">Show original</string>
     <string name="translating">Translating…</string>
@@ -251,7 +251,7 @@
     <string name="shizuku_not_installed">Shizuku/Sui isn\'t installed</string>
     <string name="root_not_granted">Root access was denied or timed out</string>
     <string name="shizuku_not_running">Shizuku isn\'t running. Start it, then retry</string>
-    <string name="shizuku_permission_needed">Allow Omnify in Shizuku, then retry</string>
+    <string name="shizuku_permission_needed">Allow AppHarbor in Shizuku, then retry</string>
     <string name="installed">Installed</string>
     <string name="installing">Installing</string>
     <string name="updating">Updating</string>
@@ -332,7 +332,7 @@
     <string name="repositories">Repositories</string>
     <string name="repo_section_external">External repositories</string>
     <string name="repo_section_fdroid">F-Droid repositories</string>
-    <string name="repo_section_omnify_picks">Omnify\'s picks</string>
+    <string name="repo_section_omnify_picks">AppHarbor\'s picks</string>
     <string name="repo_tab_info">Info</string>
     <string name="repo_tab_apps">Apps</string>
     <string name="repo_enabled_title">Enabled</string>
@@ -369,7 +369,7 @@
     <string name="source_code_no_longer_available">Source code no longer available</string>
     <string name="special_credits">Special credits</string>
     <string name="author">Author</string>
-    <string name="author_repo_subtitle">Omnify repository</string>
+    <string name="author_repo_subtitle">AppHarbor repository</string>
     <string name="follow_on_github">Follow on GitHub</string>
     <string name="suggested">Suggested</string>
     <string name="switch_to_default_installer">Switch to default</string>
@@ -591,23 +591,23 @@
     <string name="installed_signature_mismatch_system">The installed copy (%1$s, from %2$s) wasn\'t signed by this source. It\'s a system app, so it can\'t be uninstalled or replaced by this version.</string>
     <string name="installed_signature_mismatch_google_services">The installed copy (%1$s) is Google\'s own Play Services, not this app, so it can\'t be replaced by this version.</string>
     <string name="confirm_install_channel">Install confirmations</string>
-    <string name="confirm_install_channel_DESC">Shown when Android needs your go-ahead to install or update an app and Omnify isn\'t on screen.</string>
-    <string name="migration_to_stable_title">Omnify is now out of beta</string>
-    <string name="migration_to_stable_DESC">The stable version is a separate app, so it can\'t install over this beta. Install it, then open the new Omnify: everything happens there from that point. It collects your repositories, sources, favourites and settings from this beta, then offers to remove it. There is nothing else to do here.</string>
-    <string name="migration_install_stable_DESC">Install it, then open the new Omnify: everything happens there. It collects your data from this beta by itself, then offers to remove it.</string>
-    <string name="migration_installing_stable">Downloading Omnify. Android will ask you to confirm the install when it\'s done.</string>
-    <string name="migration_open_stable_title">Omnify is installed</string>
-    <string name="migration_open_stable_DESC">Everything happens in the new Omnify from now on. Open it: it collects your repositories, sources, favourites and settings from this beta, then offers to remove it. There is nothing left to do here.</string>
-    <string name="migration_open_stable_action">Open Omnify</string>
+    <string name="confirm_install_channel_DESC">Shown when Android needs your go-ahead to install or update an app and AppHarbor isn\'t on screen.</string>
+    <string name="migration_to_stable_title">AppHarbor is now out of beta</string>
+    <string name="migration_to_stable_DESC">The stable version is a separate app, so it can\'t install over this beta. Install it, then open the new AppHarbor: everything happens there from that point. It collects your repositories, sources, favourites and settings from this beta, then offers to remove it. There is nothing else to do here.</string>
+    <string name="migration_install_stable_DESC">Install it, then open the new AppHarbor: everything happens there. It collects your data from this beta by itself, then offers to remove it.</string>
+    <string name="migration_installing_stable">Downloading AppHarbor. Android will ask you to confirm the install when it\'s done.</string>
+    <string name="migration_open_stable_title">AppHarbor is installed</string>
+    <string name="migration_open_stable_DESC">Everything happens in the new AppHarbor from now on. Open it: it collects your repositories, sources, favourites and settings from this beta, then offers to remove it. There is nothing left to do here.</string>
+    <string name="migration_open_stable_action">Open AppHarbor</string>
     <string name="migration_import_title">Bring your data over?</string>
-    <string name="migration_import_DESC">Omnify Beta is still installed. Its repositories, external sources, favourites and settings can be copied over now.</string>
+    <string name="migration_import_DESC">AppHarbor Beta is still installed. Its repositories, external sources, favourites and settings can be copied over now.</string>
     <string name="migration_import_action">Bring it over</string>
     <string name="migration_later">Not now</string>
     <string name="migration_imported_title">Everything came across</string>
-    <string name="migration_imported_DESC">Omnify Beta isn\'t needed any more. Removing it keeps one Omnify on your device instead of two.</string>
+    <string name="migration_imported_DESC">AppHarbor Beta isn\'t needed any more. Removing it keeps one AppHarbor on your device instead of two.</string>
     <string name="migration_uninstall_beta">Remove the beta</string>
     <string name="migration_keep_beta">Keep it</string>
-    <string name="migration_failed_title">Couldn\'t reach Omnify Beta</string>
+    <string name="migration_failed_title">Couldn\'t reach AppHarbor Beta</string>
     <string name="migration_failed_DESC">Nothing was changed, and the beta still has all of your data. You can try again, or move it yourself with Settings › Backup and restore.</string>
     <string name="confirm_install_title">Confirmation needed</string>
     <string name="confirm_install_DESC">Tap to finish installing %1$s</string>

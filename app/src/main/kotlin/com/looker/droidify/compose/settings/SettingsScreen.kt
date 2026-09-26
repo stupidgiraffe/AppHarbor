@@ -112,7 +112,7 @@ private val RESTORE_MIME_TYPES = arrayOf(
 )
 
 private fun defaultBackupFileName(): String =
-    "omnify-backup-" + SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()) + ".zip"
+    "appharbor-backup-" + SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()) + ".zip"
 
 /** Localised label for a translation engine choice in the dropdown. */
 @Composable
@@ -131,9 +131,12 @@ private const val FOXY_DROID_URL = "https://github.com/kitsunyan/foxy-droid"
 private const val DROID_IFY_ORIGINAL = "Original Droid-ify"
 private const val DROID_IFY_URL = "https://github.com/Droid-ify/client"
 private const val DROID_IFY_AUTHOR = "LooKeR"
-private const val AUTHOR_NAME = "Victor-root"
-private const val AUTHOR_REPO_URL = "https://github.com/Victor-root/Omnify"
-private const val AUTHOR_GITHUB_URL = "https://github.com/Victor-root"
+private const val AUTHOR_NAME = "stupidgiraffe"
+private const val AUTHOR_REPO_URL = "https://github.com/stupidgiraffe/AppHarbor"
+private const val AUTHOR_GITHUB_URL = "https://github.com/stupidgiraffe"
+private const val OMNIFY_TITLE = "Omnify"
+private const val OMNIFY_AUTHOR = "Upstream by Victor-root"
+private const val OMNIFY_URL = "https://github.com/Victor-root/Omnify"
 private const val GITHUB_TOKENS_URL = "https://github.com/settings/tokens"
 
 /** Stable key on the GitHub token row's own `item {}`, so [SettingsScreen] can find its live index (via
@@ -731,6 +734,15 @@ fun SettingsScreen(
 
             item {
                 ActionSettingItem(
+                    title = OMNIFY_TITLE,
+                    description = OMNIFY_AUTHOR,
+                    icon = painterResource(R.drawable.ic_github),
+                    onClick = { context.openLink(OMNIFY_URL) },
+                )
+            }
+
+            item {
+                ActionSettingItem(
                     title = FOXY_DROID_TITLE,
                     description = FOXY_DROID_AUTHOR,
                     icon = painterResource(R.drawable.ic_github),
@@ -859,7 +871,7 @@ private fun VersionFooter(onEasterEgg: () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
         // The app's own launcher icon (its colour foreground layer), shown as an Image so the footer
-        // reads as "this is Omnify". We use the foreground drawable, not R.mipmap.ic_launcher: the
+        // reads as "this is AppHarbor". We use the foreground drawable, not R.mipmap.ic_launcher: the
         // latter resolves to the adaptive-icon XML on API 26+, which painterResource can't load (it
         // only supports vector drawables and bitmaps), and that crashed the screen.
         //

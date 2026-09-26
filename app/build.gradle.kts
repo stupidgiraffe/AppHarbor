@@ -165,7 +165,7 @@ android {
         // Public pre-release channel: identical to release (same optimizations, same signing when a
         // local keystore is present) so it behaves exactly like the real thing, installs alongside the
         // stable app (own applicationId) so trying it never risks the working install, and is labelled
-        // "Omnify Beta" everywhere the app name is shown (see src/beta/res/values/strings.xml) — the
+        // "AppHarbor Beta" everywhere the app name is shown (see src/beta/res/values/strings.xml) — the
         // only difference from release on purpose, so this build is otherwise trustworthy to distribute
         // and gather feedback on.
         //
@@ -296,7 +296,7 @@ androidComponents {
             // output.versionName is the fully-resolved per-variant name (defaultConfig.versionName
             // plus that build type's own versionNameSuffix, e.g. beta's "-beta.2"), so the file name
             // always matches what the build type actually is without repeating that logic here.
-            (output as? VariantOutputImpl)?.outputFileName?.set(output.versionName.map { "Omnify-v$it.apk" })
+            (output as? VariantOutputImpl)?.outputFileName?.set(output.versionName.map { "AppHarbor-v$it.apk" })
         }
     }
 }
