@@ -67,19 +67,27 @@ jobs:
           sha256sum "$apk" > "$apk.sha256"
 
           cat > release-notes.md <<EOF
-          # AppHarbor Development Build
+          # AppHarbor v${version} — Development Preview
 
-          Latest tested development build from **main**.
+          **Your Android app library, beyond the Play Store.**
 
-          - **Version:** ${version}.d
-          - **Commit:** ${short_sha}
-          - **Channel:** Development / debug
+          AppHarbor brings F-Droid repositories, GitHub, GitLab, Codeberg, Gitea, Forgejo, and independent Android projects into one place. Follow developers, discover their apps, keep a personal library, and update from the original source instead of hunting through release pages by hand.
+
+          ## Highlights
+
+          - Browse F-Droid-style repositories and independent forge releases together
+          - Follow entire developer accounts or individual repositories
+          - Discover Android releases from GitHub, GitLab, Codeberg, Gitea, and Forgejo
+          - Resume interrupted creator scans with persisted background progress
+          - Keep a personal catalog of interesting Android apps and their sources
 
           ## Install
 
           Download **${apk}** from **Assets** below and install it on Android.
 
-          > This is a development build signed by GitHub Actions, not a production release. If Android reports a signing conflict with an older debug build, uninstall that older debug build first.
+          **Build info:** version ${version}.d · commit ${short_sha} · development channel
+
+          > This preview is debug-signed for active development. If Android reports a signing conflict with an older debug build, uninstall that older debug build first.
 
           ## Verification
 
@@ -109,4 +117,4 @@ jobs:
             esac
           done
 
-          gh release create "$TAG" "$APK" "$APK.sha256" --target "$GITHUB_SHA" --title "AppHarbor Dev v${VERSION}" --notes-file release-notes.md --prerelease --latest=false
+          gh release create "$TAG" "$APK" "$APK.sha256" --target "$GITHUB_SHA" --title "AppHarbor v${VERSION} — Development Preview" --notes-file release-notes.md --prerelease --latest=false
