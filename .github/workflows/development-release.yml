@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'website/**'
+      - '**/*.md'
   workflow_dispatch:
 
 permissions:
@@ -11,7 +14,7 @@ permissions:
 
 concurrency:
   group: development-release-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   publish:
@@ -96,7 +99,6 @@ jobs:
 
           echo "apk=$apk" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "short_sha=$short_sha" >> "$GITHUB_OUTPUT"
 
       - name: Publish rolling GitHub development release
         env:
@@ -108,13 +110,11 @@ jobs:
         run: |
           set -euo pipefail
 
-          gh release list --limit 100 --json tagName,isPrerelease --jq '.[] | select(.isPrerelease == true) | .tagName' |
-          while read -r old_tag; do
-            case "$old_tag" in
-              appharbor-dev|dev-*)
-                gh release delete "$old_tag" --cleanup-tag -y || true
-                ;;
-            esac
-          done
-
-          gh release create "$TAG" "$APK" "$APK.sha256" --target "$GITHUB_SHA" --title "AppHarbor v${VERSION} — Development Preview" --notes-file release-notes.md --prerelease --latest=false
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            git tag -f "$TAG" "$GITHUB_SHA"
+            git push origin "refs/tags/$TAG" --force
+            gh release edit "$TAG"               --title "AppHarbor v${VERSION} — Development Preview"               --notes-file release-notes.md               --prerelease
+            gh release upload "$TAG" "$APK" "$APK.sha256" --clobber
+          else
+            gh release create "$TAG" "$APK" "$APK.sha256"               --target "$GITHUB_SHA"               --title "AppHarbor v${VERSION} — Development Preview"               --notes-file release-notes.md               --prerelease
+          fi
