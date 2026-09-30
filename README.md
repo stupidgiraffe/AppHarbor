@@ -1,52 +1,105 @@
-# AppHarbor
+# AppHarbor ⚓
 
-AppHarbor is an Android app discovery browser and personal APK harbor built from [Omnify](https://github.com/Victor-root/Omnify), which itself builds on [Droid-ify](https://github.com/Droid-ify/client).
+**Your Android app library, beyond the Play Store.**
 
-The current app already combines F-Droid-style repository browsing with direct external sources from GitHub, GitLab, Codeberg, and compatible Gitea/Forgejo hosts. Whole creator/account discovery is durable and resumable: scans run through WorkManager, survive process death, checkpoint completed repositories, retry transient provider failures, and report persisted progress back to the UI.
+AppHarbor brings F-Droid repositories, GitHub, GitLab, Codeberg, Gitea, Forgejo, and independent Android projects into one place. Follow developers, discover their apps, build a personal library, and keep everything organized and up to date without hunting through release pages by hand.
 
-AppHarbor is under active development. The longer-term direction is a broader universal Android discovery/library layer that can aggregate more source types and user-supplied repositories. Appteka integration and other store/catalog sources are future work; they are not implemented today.
+[![Development release](https://img.shields.io/github/v/release/stupidgiraffe/AppHarbor?include_prereleases&label=development)](https://github.com/stupidgiraffe/AppHarbor/releases/tag/appharbor-dev)
+[![Android](https://img.shields.io/badge/Android-6.0%2B-3DDC84?logo=android&logoColor=white)](#)
+[![License](https://img.shields.io/github/license/stupidgiraffe/AppHarbor)](LICENSE)
 
-## Development builds
+## What AppHarbor does
 
-Installable development APKs are published as **GitHub pre-releases** in this repository:
+- **Browse F-Droid-style repositories** alongside apps published directly on software forges.
+- **Follow an entire developer account** on GitHub, GitLab, Codeberg, Gitea, or Forgejo and discover its Android releases automatically.
+- **Track individual repositories** when you only want one project.
+- **Install and update APKs** from their original release source.
+- **Keep a personal app library** instead of remembering dozens of GitHub pages and obscure repositories.
+- **Resume creator discovery in the background** when scans are interrupted, with persisted progress and retry handling.
+- **Inspect app metadata before installation**, including the real package metadata available from release APKs.
+- **Stay local-first**: the core app library works on-device, with optional sync planned for people who want the same library across devices.
 
-**https://github.com/stupidgiraffe/AppHarbor/releases**
+## Get AppHarbor
 
-Each development release is tied to a specific commit and includes the APK plus a SHA-256 checksum file. These are debug/development builds for testing AppHarbor as it evolves. They are separate from a future production-signed release channel.
+### Development build
 
-GitHub Actions also uploads ordinary CI artifacts on pushes and pull requests. Those artifacts are temporary build evidence and expire; the GitHub pre-releases are the durable download path.
+The latest tested development APK is published as a GitHub prerelease:
+
+**[Download AppHarbor Dev](https://github.com/stupidgiraffe/AppHarbor/releases/tag/appharbor-dev)**
+
+The release includes:
+
+- `AppHarbor-v1.0.5-dev.apk`
+- a SHA-256 checksum
+- version and source commit information
+
+This channel is for active AppHarbor development. A production-signed release channel will follow when the app is ready for broader distribution.
+
+## Why AppHarbor
+
+Some of the best Android apps never reach a traditional app store. They live in GitHub releases, small F-Droid repositories, Codeberg projects, self-hosted forges, and developer accounts you discover once and then struggle to keep track of.
+
+AppHarbor turns those scattered sources into a **personal Android catalog**.
+
+Instead of:
+
+> find project → open releases → identify the correct APK → download → remember to check again later
+
+the goal is:
+
+> follow source once → discover apps → keep them in your library → update from the source
+
+## Current development status
+
+AppHarbor already has a working installable development build and the core multi-source discovery/update foundation inherited from Omnify.
+
+### Working now
+
+- F-Droid-style repository browsing
+- GitHub, GitLab, Codeberg, Gitea, and Forgejo external sources
+- whole-account / creator discovery
+- individual repository tracking
+- resumable background creator scans
+- persisted scan checkpoints and progress
+- retry handling for transient provider failures
+- APK builds published automatically through GitHub Releases
+
+### In active development
+
+- faster creator/repository search and filtering
+- a stronger personal Library experience
+- developer/creator pages and better grouping
+- imports from existing Android app-library tools
+- optional multi-device sync
+- broader source support
+- full AppHarbor visual identity, launcher artwork, and fresh screenshots
 
 ## Build from source
 
-Requires JDK 17 and an Android SDK.
+AppHarbor currently builds with JDK 17 and the Android SDK.
 
 ```bash
 ./gradlew --no-daemon testDebugUnitTest assembleDebug
 ```
 
-The debug APK is produced under `app/build/outputs/apk/debug/`.
+The debug APK is produced under:
 
-## Compatibility identity
+```text
+app/build/outputs/apk/debug/
+```
 
-AppHarbor intentionally retains several inherited internal identifiers so existing installs and stored data are not broken by a cosmetic rename:
+## Project lineage
 
-- stable application ID: `com.omnify.vroot`
-- debug application ID: `com.omnify.vroot.debug`
-- Kotlin/Android namespace: `com.looker.droidify`
-- existing Omnify-era preference keys, migration markers, provider authorities, and compatible deep-link state where changing them would strand existing installs or data
-
-Those internal names do not define the user-facing product identity. The app label, in-app attribution, build metadata, repository landing page, APK names, and AppHarbor update source use **AppHarbor**.
-
-## Screenshots
-
-Screenshots are intentionally omitted from this landing page until a fresh set has been captured from a verified AppHarbor build. The inherited Omnify screenshots in the repository are historical upstream assets and are not presented here as AppHarbor UI.
-
-## Upstream and license
-
-AppHarbor exists because of the work in:
+AppHarbor is built from the excellent work of:
 
 - [Omnify](https://github.com/Victor-root/Omnify) by Victor-root
 - [Droid-ify](https://github.com/Droid-ify/client) by LooKeR
 - [Foxy-Droid](https://github.com/kitsunyan/foxy-droid) by kitsunyan
 
-The project remains licensed under the GNU General Public License v3. See [LICENSE](LICENSE).
+AppHarbor is evolving that foundation toward a broader **personal Android discovery and library layer** focused on apps from both repositories and independent developer sources.
+
+For upgrade/data compatibility during development, several inherited internal Android identifiers remain unchanged. They are implementation details rather than the AppHarbor product identity.
+
+## License
+
+AppHarbor is free software licensed under the **GNU General Public License v3**. See [LICENSE](LICENSE).
