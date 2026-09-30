@@ -1,4 +1,4 @@
-/* Omnify site. The aurora motif is lifted straight from the app: the same
+/* AppHarbor site. The aurora motif is inherited from the app's visual language: the same
    drifting ambient blobs its own screens render behind their content.
    --brand / --brand-2 are the accent pair. They are not fixed: accents.js
    rewrites them when a visitor picks a colour in the header, the same way the
@@ -1841,4 +1841,61 @@ a { color: inherit; }
     transition-duration: 0.001ms !important;
   }
   .reveal { opacity: 1; transform: none; }
+}
+
+
+/* ---------- AppHarbor landing page ---------- */
+
+.brand-anchor {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--brand) 24%, transparent), color-mix(in srgb, var(--brand-2) 18%, transparent));
+  border: 1px solid color-mix(in srgb, var(--brand) 36%, var(--border));
+  box-shadow: 0 10px 30px -16px color-mix(in srgb, var(--brand) 70%, transparent);
+  font-size: 20px;
+}
+
+.harbor-preview {
+  width: min(100%, 520px);
+  margin-inline: auto;
+}
+
+.harbor-preview .fake-card {
+  padding: clamp(24px, 4vw, 34px);
+}
+
+.download-note {
+  margin-top: 38px;
+}
+
+.appharbor-site .nav {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border-bottom-color: var(--border);
+}
+
+@media (max-width: 1250px) {
+  .appharbor-site .nav-links {
+    position: static;
+    inset: auto;
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    display: flex;
+  }
+}
+
+@media (max-width: 760px) {
+  .appharbor-site .nav-links { display: none; }
 }
