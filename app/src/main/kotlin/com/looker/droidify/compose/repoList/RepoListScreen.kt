@@ -980,23 +980,14 @@ private fun ExternalAccountItem(
                 .clickable(onClick = onOpen)
                 .padding(vertical = 4.dp),
         ) {
-            if (account.key == ExternalAccount.OMNIFY_KEY) {
-                // The built-in Omnify source is branded with the app's own logo so it's recognisable.
-                AppLauncherIcon(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .alpha(contentAlpha),
-                )
-            } else {
-                RepoIcon(
-                    iconUrl = account.iconUrl,
-                    fallbackUrl = null,
-                    name = account.label,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .alpha(contentAlpha),
-                )
-            }
+            RepoIcon(
+                iconUrl = account.iconUrl,
+                fallbackUrl = null,
+                name = account.label,
+                modifier = Modifier
+                    .size(48.dp)
+                    .alpha(contentAlpha),
+            )
             Spacer(modifier = Modifier.size(16.dp))
             Column(
                 modifier = Modifier
