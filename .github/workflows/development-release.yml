@@ -68,6 +68,8 @@ jobs:
           apk="AppHarbor-v${version}-dev.apk"
           cp "$source_apk" "$apk"
           sha256sum "$apk" > "$apk.sha256"
+          cp "$apk" AppHarbor-latest-dev.apk
+          sha256sum AppHarbor-latest-dev.apk > AppHarbor-latest-dev.apk.sha256
 
           cat > release-notes.md <<EOF
           # AppHarbor v${version} — Development Preview
@@ -86,7 +88,7 @@ jobs:
 
           ## Install
 
-          Download **${apk}** from **Assets** below and install it on Android.
+          Download **${apk}** from **Assets** below and install it on Android. For a permanent one-tap direct link, use **AppHarbor-latest-dev.apk**; both APK names contain the identical build.
 
           **Build info:** version ${version}.d · commit ${short_sha} · development channel
 
@@ -94,7 +96,7 @@ jobs:
 
           ## Verification
 
-          A SHA-256 checksum is attached as **${apk}.sha256**.
+          SHA-256 checksums are attached for both the versioned APK and the permanent download filename.
           EOF
 
           echo "apk=$apk" >> "$GITHUB_OUTPUT"
@@ -114,7 +116,7 @@ jobs:
             git tag -f "$TAG" "$GITHUB_SHA"
             git push origin "refs/tags/$TAG" --force
             gh release edit "$TAG"               --title "AppHarbor v${VERSION} — Development Preview"               --notes-file release-notes.md               --prerelease
-            gh release upload "$TAG" "$APK" "$APK.sha256" --clobber
+            gh release upload "$TAG" "$APK" "$APK.sha256" AppHarbor-latest-dev.apk AppHarbor-latest-dev.apk.sha256 --clobber
           else
-            gh release create "$TAG" "$APK" "$APK.sha256"               --target "$GITHUB_SHA"               --title "AppHarbor v${VERSION} — Development Preview"               --notes-file release-notes.md               --prerelease
+            gh release create "$TAG" "$APK" "$APK.sha256" AppHarbor-latest-dev.apk AppHarbor-latest-dev.apk.sha256               --target "$GITHUB_SHA"               --title "AppHarbor v${VERSION} — Development Preview"               --notes-file release-notes.md               --prerelease
           fi
