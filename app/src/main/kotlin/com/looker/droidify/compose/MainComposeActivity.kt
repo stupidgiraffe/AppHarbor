@@ -81,6 +81,7 @@ import com.looker.droidify.utility.common.sharedSourceUrl
 import com.looker.droidify.utility.common.openUnknownAppSourcesSettings
 import com.looker.droidify.utility.common.requestNotificationPermission
 import com.looker.droidify.utility.common.wallpaperAccentColor
+import com.looker.droidify.work.CreatorDiscoveryScheduler
 import com.looker.droidify.work.SyncWorker
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -112,6 +113,9 @@ class MainComposeActivity : ComponentActivity() {
     @Inject
     lateinit var externalApi: ExternalApi
 
+    @Inject
+    lateinit var creatorDiscoveryScheduler: CreatorDiscoveryScheduler
+
     companion object {
         const val ACTION_UPDATES = "${BuildConfig.APPLICATION_ID}.intent.action.UPDATES"
 
@@ -126,6 +130,7 @@ class MainComposeActivity : ComponentActivity() {
         private const val KEY_OMNIFY_SEED = "omnify_seed_v6"
         private const val KEY_OMNIFY_CURATED_MIGRATED = "omnify_curated_migrated_v1"
         private const val KEY_APPHARBOR_SOURCE_MIGRATED = "appharbor_source_migrated_v1"
+        private const val KEY_UPSTREAM_CURATED_CLEANUP_V1 = "upstream_curated_cleanup_v1"
         private const val KEY_TV_PACK_SEEDED_V1 = "tv_pack_seeded_v1"
         private const val KEY_TV_PACK_ICONS_BACKFILLED_V1 = "tv_pack_icons_backfilled_v1"
         private const val KEY_TV_PACK_CURATEDTV_BACKFILLED_V1 = "tv_pack_curatedtv_backfilled_v1"
@@ -142,20 +147,6 @@ class MainComposeActivity : ComponentActivity() {
         packageName = BuildConfig.APPLICATION_ID,
         installedTag = BuildConfig.VERSION_NAME,
         enabled = true,
-        curated = true,
-    )
-
-    /** The developer's whole GitHub account as a second, opt-in source: disabled by default (the user
-     *  enables it to get every app of the account), forks included (the apps are published as forks),
-     *  labelled with the account name but shown with the app's own logo (see [ExternalAccount.OMNIFY_KEY]).
-     *  The AppHarbor repo above is tracked separately, so the account won't absorb it. */
-    private fun victorAccount(): ExternalAccount = ExternalAccount(
-        provider = SourceProvider.GITHUB,
-        owner = "Victor-root",
-        label = "Victor-root",
-        description = getString(R.string.external_account_omnify_description),
-        enabled = false,
-        includeForks = true,
         curated = true,
     )
 
@@ -492,12 +483,10 @@ class MainComposeActivity : ComponentActivity() {
                     .forEach { repository.enableRepository(it, enable = true) }
             }
 
-            // Seed AppHarbor's own update source on a fresh install while keeping Victor-root's
-            // upstream account available as a separate, opt-in source.
+            // Keep the legacy first-run flag for existing installations, but seed only our own
+            // update channel. Users can add upstream maintainers as ordinary sources if they wish.
             if (!firstRunPrefs.getBoolean(KEY_OMNIFY_SEED, false)) {
-                externalAppRepository.removeAppsByAccount(ExternalAccount.OMNIFY_KEY)
                 externalAppRepository.upsertApp(appHarborUpdateSource())
-                externalAppRepository.upsertAccount(victorAccount())
                 firstRunPrefs.edit().putBoolean(KEY_OMNIFY_SEED, true).apply()
             }
 
@@ -520,15 +509,33 @@ class MainComposeActivity : ComponentActivity() {
             }
 
             // Keep the inherited migration flag name for install compatibility, but apply the curated
-            // marker to AppHarbor's own source. Victor-root's account remains an explicit upstream credit.
+            // marker only to AppHarbor's own source.
             if (!firstRunPrefs.getBoolean(KEY_OMNIFY_CURATED_MIGRATED, false)) {
                 externalAppRepository.getApps()
                     .firstOrNull { it.key == ExternalApp.APPHARBOR_REPO_KEY && !it.curated }
                     ?.let { externalAppRepository.upsertApp(it.copy(curated = true)) }
-                externalAppRepository.getAccounts()
-                    .firstOrNull { it.key == ExternalAccount.OMNIFY_KEY && !it.curated }
-                    ?.let { externalAppRepository.upsertAccount(it.copy(curated = true)) }
                 firstRunPrefs.edit().putBoolean(KEY_OMNIFY_CURATED_MIGRATED, true).apply()
+            }
+
+            // Remove the inherited account from AppHarbor's promotional picks, once, without
+            // removing user-managed sources. An enabled upstream account is a deliberate follow,
+            // so retain it as an ordinary account and keep all its discovered apps. An inactive
+            // inherited curated entry was a default suggestion: cancel any residual scan and
+            // clean its dependent results. Accounts added by users are never touched.
+            if (!firstRunPrefs.getBoolean(KEY_UPSTREAM_CURATED_CLEANUP_V1, false)) {
+                externalAppRepository.getAccounts()
+                    .firstOrNull { it.key == ExternalAccount.OMNIFY_KEY && it.curated }
+                    ?.let { upstream ->
+                        if (upstream.enabled) {
+                            externalAppRepository.upsertAccount(upstream.copy(curated = false))
+                        } else {
+                            creatorDiscoveryScheduler.cancel(upstream.key)
+                            externalAppRepository.removeAppsByAccount(upstream.key)
+                            externalAppRepository.removeAccount(upstream.key)
+                            externalAppRepository.removeDiscoveryJob(upstream.key)
+                        }
+                    }
+                firstRunPrefs.edit().putBoolean(KEY_UPSTREAM_CURATED_CLEANUP_V1, true).apply()
             }
 
             // One-time: seed the curated Android TV app pack (see curatedTvPack's doc comment), disabled
