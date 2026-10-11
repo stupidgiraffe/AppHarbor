@@ -1,5 +1,7 @@
 # AppHarbor ⚓
 
+<p align="center"><img src="assets/appharbor-beacon.svg" alt="AppHarbor beacon logo" width="112" /></p>
+
 **Your Android app library, beyond the Play Store.**
 
 AppHarbor brings F-Droid repositories, GitHub, GitLab, Codeberg, Gitea, Forgejo, and independent Android projects into one place. Follow developers, discover their apps, build a personal library, and keep everything organized and up to date without hunting through release pages by hand.

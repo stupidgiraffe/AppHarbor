@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- AppHarbor beacon: the H-shaped pier, sheltered harbor ring and a discovery light. -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#244B56"
+        android:strokeWidth="1.5"
+        android:pathData="M54,47 m-35,0 a35,35 0,1 1,70 0 a35,35 0,1 1,-70 0" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#245B63"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M30,58 V46 C30,32 40,21 54,21 C68,21 78,32 78,46 V58" />
+    <path
+        android:fillColor="#52E9D2"
+        android:pathData="M38,62 V43 Q38,40 41,40 H45 Q48,40 48,43 V54 H60 V43 Q60,40 63,40 H67 Q70,40 70,43 V62 Q70,65 67,65 H63 Q60,65 60,62 V61 H48 V62 Q48,65 45,65 H41 Q38,65 38,62 Z" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#5DEBD4"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M32,73 Q43,65 54,73 T76,73" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#276B7C"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round"
+        android:pathData="M39,83 Q48,77 57,83 T75,83" />
+    <path android:fillColor="#FFCA72"
+        android:pathData="M54,20.5 a4.5,4.5 0,1 1,0 9 a4.5,4.5 0,1 1,0 -9" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFCA72"
+        android:strokeWidth="2.6"
+        android:strokeLineCap="round"
+        android:pathData="M54,13 V16 M43,21 L40,19 M65,21 L68,19" />
+</vector>

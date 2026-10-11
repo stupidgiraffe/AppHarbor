@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Single-tone glyph for Android 13+ themed launcher icons. -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M38,62 V43 Q38,40 41,40 H45 Q48,40 48,43 V54 H60 V43 Q60,40 63,40 H67 Q70,40 70,43 V62 Q70,65 67,65 H63 Q60,65 60,62 V61 H48 V62 Q48,65 45,65 H41 Q38,65 38,62 Z" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M32,73 Q43,65 54,73 T76,73" />
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M54,20.5 a4.5,4.5 0,1 1,0 9 a4.5,4.5 0,1 1,0 -9" />
+</vector>
