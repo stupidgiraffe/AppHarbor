@@ -75,6 +75,10 @@ AppHarbor already has a working installable development build and the core multi
 - broader source support
 - full AppHarbor visual identity, launcher artwork, and fresh screenshots
 
+## Support AppHarbor
+
+AppHarbor is developed as a free, open-source Android app without ads or paid search placement. If you find it useful, you can [support its development on Buy Me a Coffee](https://buymeacoffee.com/stupidgiraffe). Support is voluntary and does not affect catalog visibility, app updates, or trust signals.
+
 ## Build from source
 
 AppHarbor currently builds with JDK 17 and the Android SDK.
