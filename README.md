@@ -32,7 +32,7 @@ The latest tested development APK is published as a GitHub prerelease:
 The release includes:
 
 - `AppHarbor-latest-dev.apk` (permanent direct-download filename)
-- a versioned APK, such as `AppHarbor-v1.0.5-dev.apk`
+- a versioned APK (the filename follows each published build version)
 - SHA-256 checksums for both names
 - version and source commit information
 
