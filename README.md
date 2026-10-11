@@ -25,12 +25,13 @@ AppHarbor brings F-Droid repositories, GitHub, GitLab, Codeberg, Gitea, Forgejo,
 
 The latest tested development APK is published as a GitHub prerelease:
 
-**[Download AppHarbor Dev](https://github.com/stupidgiraffe/AppHarbor/releases/tag/appharbor-dev)**
+**[Download the latest development APK](https://github.com/stupidgiraffe/AppHarbor/releases/download/appharbor-dev/AppHarbor-latest-dev.apk)** · [Release notes and checksum](https://github.com/stupidgiraffe/AppHarbor/releases/tag/appharbor-dev)
 
 The release includes:
 
-- `AppHarbor-v1.0.5-dev.apk`
-- a SHA-256 checksum
+- `AppHarbor-latest-dev.apk` (permanent direct-download filename)
+- a versioned APK, such as `AppHarbor-v1.0.5-dev.apk`
+- SHA-256 checksums for both names
 - version and source commit information
 
 This channel is for active AppHarbor development. A production-signed release channel will follow when the app is ready for broader distribution.
